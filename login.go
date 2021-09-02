@@ -1,6 +1,7 @@
 package main
 
 import (
+	"TestProject/Models"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -14,7 +15,7 @@ func addLoginRoutes(rg *gin.RouterGroup) {
 }
 
 func handleLoginRequest(context *gin.Context) {
-	var request LoginData
+	var request Models.User
 	if err := context.ShouldBindJSON(&request); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -28,9 +29,4 @@ func handleLoginRequest(context *gin.Context) {
 		})
 	}
 
-}
-
-type LoginData struct {
-	Login    string `json:"login" binding:"required"`
-	Password string `json:"password" binding:"required"`
 }

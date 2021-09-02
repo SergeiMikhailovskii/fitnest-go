@@ -1,13 +1,9 @@
-package models
+package Models
 
-import "gorm.io/gorm"
-
-type User struct {
-	gorm.Model
-	ID       int
-	Login    string
-	Password string
-}
+import (
+	"TestProject/Config"
+	"gorm.io/gorm"
+)
 
 func CreateUser(db *gorm.DB, User *User) (err error) {
 	err = db.Create(User).Error
@@ -30,6 +26,13 @@ func DeleteUser(db *gorm.DB, User *User, id string) (err error) {
 }
 
 func UpdateUser(db *gorm.DB, User *User) (err error) {
-	err = db.Save("id = ?").Error
+	err = db.Save(User).Error
 	return err
+}
+
+func GetUserByID(user *User, login string) (err error) {
+	if err = Config.DB.Where("Login = ?", login).First(user).Error; err != nil {
+		return err
+	}
+	return nil
 }

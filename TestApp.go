@@ -1,16 +1,21 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
+	"TestProject/Config"
+	"TestProject/Models"
+	"TestProject/Routes"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func main() {
-	r := gin.Default()
-
-	addLoginRoutes(r.Group("/auth"))
-
-	err := r.Run()
-	if err != nil {
-		return
-	}
+	Config.DB, _ = gorm.Open(mysql.Open(Config.DbURL(Config.BuildDBConfig())), &gorm.Config{})
+	//if err != nil {
+	//	fmt.Println("Status:", err)
+	//}
+	//defer Config.DB.Close()
+	Config.DB.AutoMigrate(&Models.User{})
+	r := Routes.SetupRouter()
+	//running
+	r.Run()
 }
