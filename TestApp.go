@@ -9,11 +9,12 @@ import (
 )
 
 func main() {
-	Config.DB, _ = gorm.Open(mysql.Open(Config.DbURL(Config.BuildDBConfig())), &gorm.Config{})
-	//if err != nil {
-	//	fmt.Println("Status:", err)
-	//}
-	//defer Config.DB.Close()
+	url := Config.DbURL(Config.BuildDBConfig())
+	db, err := gorm.Open(mysql.Open(url), &gorm.Config{})
+	if err != nil {
+		panic(err.Error())
+	}
+	Config.DB = db
 	Config.DB.AutoMigrate(&Models.User{})
 	r := Routes.SetupRouter()
 	//running
