@@ -1,7 +1,9 @@
 package Controllers
 
 import (
+	"TestProject/Errors"
 	"TestProject/Models"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/render"
 	"net/http"
@@ -13,7 +15,7 @@ func LoginUser(c *gin.Context) {
 	_ = c.BindJSON(&userRequest)
 	err := Models.GetUserByID(&userResponse, userRequest)
 
-	if err.Error() == "user not found" {
+	if errors.Is(err, Errors.UserNotFound) {
 		c.JSON(http.StatusOK, render.JSON{
 			Data: err.Error(),
 		})
