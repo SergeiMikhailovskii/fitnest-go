@@ -7,6 +7,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func LoginUser(c *gin.Context) {
@@ -23,6 +24,12 @@ func LoginUser(c *gin.Context) {
 	} else if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:   "userId",
+			Value:  strconv.Itoa(userResponse.ID),
+			Domain: c.Request.RequestURI,
+			Path:   "/",
+		})
 		c.JSON(http.StatusOK, userResponse)
 	}
 }
