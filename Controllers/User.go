@@ -4,10 +4,10 @@ import (
 	"TestProject/Errors"
 	"TestProject/Models"
 	"TestProject/Models/Base"
+	"TestProject/Util"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 func LoginUser(c *gin.Context) {
@@ -24,12 +24,15 @@ func LoginUser(c *gin.Context) {
 	} else if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
+		authUserToken, _ := Util.GenerateJwt(userResponse.ID)
 		http.SetCookie(c.Writer, &http.Cookie{
-			Name:   "userId",
-			Value:  strconv.Itoa(userResponse.ID),
-			Domain: c.Request.RequestURI,
-			Path:   "/",
+			Name:  "AuthUser",
+			Value: authUserToken,
 		})
-		c.JSON(http.StatusOK, userResponse)
+
+		c.JSON(http.StatusOK, Base.Response{
+			Errors: nil,
+			Data:   nil,
+		})
 	}
 }

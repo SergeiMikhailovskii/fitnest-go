@@ -1,6 +1,6 @@
 package Base
 
 type Response struct {
-	Errors []string
-	Data   interface{}
+	Errors []string    `json:"errors"`
+	Data   interface{} `json:"data"`
 }
