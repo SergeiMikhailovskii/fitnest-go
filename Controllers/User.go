@@ -1,9 +1,12 @@
 package Controllers
 
 import (
+	"TestProject/Errors"
 	"TestProject/Models"
+	"TestProject/Models/Base"
+	"TestProject/Util"
+	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/render"
 	"net/http"
 )
 
@@ -13,13 +16,23 @@ func LoginUser(c *gin.Context) {
 	_ = c.BindJSON(&userRequest)
 	err := Models.GetUserByID(&userResponse, userRequest)
 
-	if err.Error() == "user not found" {
-		c.JSON(http.StatusOK, render.JSON{
-			Data: err.Error(),
+	if errors.Is(err, Errors.UserNotFound) {
+		c.JSON(http.StatusOK, Base.Response{
+			Errors: []string{err.Error()},
+			Data:   nil,
 		})
 	} else if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, userResponse)
+		authUserToken, _ := Util.GenerateJwt(userResponse.ID)
+		http.SetCookie(c.Writer, &http.Cookie{
+			Name:  "AuthUser",
+			Value: authUserToken,
+		})
+
+		c.JSON(http.StatusOK, Base.Response{
+			Errors: nil,
+			Data:   nil,
+		})
 	}
 }
