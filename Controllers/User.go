@@ -32,6 +32,26 @@ func LoginUser(c *gin.Context) {
 
 		c.JSON(http.StatusOK, Base.Response{
 			Errors: nil,
+			Data:   struct{}{},
+		})
+	}
+}
+
+func RegisterUser(c *gin.Context) {
+	var userRequest Models.User
+	_ = c.BindJSON(&userRequest)
+	err := Models.CreateUser(&userRequest)
+
+	if errors.Is(err, Errors.UserNotFound) {
+		c.JSON(http.StatusOK, Base.Response{
+			Errors: []string{err.Error()},
+			Data:   nil,
+		})
+	} else if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+	} else {
+		c.JSON(http.StatusOK, Base.Response{
+			Errors: nil,
 			Data:   nil,
 		})
 	}

@@ -10,6 +10,7 @@ func SetupRouter() *gin.Engine {
 	authGroup := r.Group("/auth")
 	{
 		authGroup.POST("login", Controllers.LoginUser)
+		authGroup.POST("register", Controllers.RegisterUser)
 	}
 	return r
 }
