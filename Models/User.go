@@ -31,9 +31,17 @@ func UpdateUser(db *gorm.DB, User *User) (err error) {
 	return err
 }
 
-func GetUserByID(user *User, userRequest User) (err error) {
+func GetUserByCreds(user *User, userRequest User) (err error) {
 	if err = Config.DB.Where("Login = ? AND Password = ?", userRequest.Login, userRequest.Password).First(user).Error; err != nil {
 		err = Errors.UserNotFound
+	}
+	return err
+}
+
+func GetUserByLogin(userRequest User) (err error) {
+	user := User{}
+	if err = Config.DB.Where("Login = ?", userRequest.Login).First(&user).Error; err == nil {
+		err = Errors.UserExists
 	}
 	return err
 }
