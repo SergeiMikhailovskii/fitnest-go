@@ -18,5 +18,6 @@ func main() {
 	Config.DB.AutoMigrate(&Models.User{})
 	r := Routes.SetupRouter()
 	//running
-	err = r.RunTLS(":8080", "/users/sergeimikhailovskii/cert/CA/localhost/localhost.crt", "/users/sergeimikhailovskii/cert/CA/localhost/localhost.decrypted.key")
+	err = r.Run(":8080")
+	//err = r.RunTLS(":8080", "/users/sergeimikhailovskii/cert/CA/localhost/localhost.crt", "/users/sergeimikhailovskii/cert/CA/localhost/localhost.decrypted.key")
 }

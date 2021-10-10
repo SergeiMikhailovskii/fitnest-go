@@ -11,6 +11,7 @@ func SetupRouter() *gin.Engine {
 	{
 		authGroup.POST("login", Controllers.LoginUser)
 		authGroup.POST("register", Controllers.RegisterUser)
+		authGroup.GET("generate-token", Controllers.GenerateToken)
 	}
 	return r
 }
