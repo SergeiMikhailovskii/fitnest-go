@@ -4,13 +4,13 @@ import (
 	"TestProject/Config"
 	"TestProject/Models"
 	"TestProject/Routes"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func main() {
 	url := Config.DbURL(Config.BuildDBConfig())
-	db, err := gorm.Open(mysql.Open(url), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 	if err != nil {
 		panic(err.Error())
 	}

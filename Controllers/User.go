@@ -55,6 +55,12 @@ func RegisterUser(c *gin.Context) {
 			Data: nil,
 		})
 		return
+	} else if errors.Is(err, Errors.UserNotFound) {
+		Models.CreateUser(&userRequest)
+		c.JSON(http.StatusOK, Base.Response{
+			Errors: nil,
+			Data:   nil,
+		})
 	} else if err != nil {
 		c.JSON(http.StatusInternalServerError, Base.Response{
 			Errors: []Base.Error{{
@@ -62,16 +68,6 @@ func RegisterUser(c *gin.Context) {
 				Message: err.Error()},
 			},
 			Data: nil,
-		})
-		return
-	}
-
-	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
-	} else {
-		c.JSON(http.StatusOK, Base.Response{
-			Errors: nil,
-			Data:   nil,
 		})
 	}
 }

@@ -40,8 +40,11 @@ func GetUserByCreds(user *User, userRequest User) (err error) {
 
 func GetUserByLogin(userRequest User) (err error) {
 	user := User{}
-	if err = Config.DB.Where("Login = ?", userRequest.Login).First(&user).Error; err == nil {
+	err = Config.DB.Where("Login = ?", userRequest.Login).First(&user).Error
+	if err == nil {
 		err = Errors.UserExists
+	} else {
+		err = Errors.UserNotFound
 	}
 	return err
 }

@@ -19,20 +19,20 @@ type DBConfig struct {
 func BuildDBConfig() *DBConfig {
 	dbConfig := DBConfig{
 		Host:     "127.0.0.1",
-		Port:     3306,
-		User:     "root",
+		Port:     5432,
+		User:     "sergeimikhailovskii",
 		Password: "12345",
-		DBName:   "go_test",
+		DBName:   "fitnestdb",
 	}
 	return &dbConfig
 }
 func DbURL(dbConfig *DBConfig) string {
 	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
+		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Europe/Minsk",
+		dbConfig.Host,
 		dbConfig.User,
 		dbConfig.Password,
-		dbConfig.Host,
-		dbConfig.Port,
 		dbConfig.DBName,
+		dbConfig.Port,
 	)
 }
