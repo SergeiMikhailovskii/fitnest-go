@@ -3,6 +3,7 @@ package Config
 import (
 	"fmt"
 	"gorm.io/gorm"
+	"os"
 )
 
 var DB *gorm.DB
@@ -27,6 +28,10 @@ func BuildDBConfig() *DBConfig {
 	return &dbConfig
 }
 func DbURL(dbConfig *DBConfig) string {
+	url := os.Getenv("DATABASE_URL")
+	if url != "" {
+		return url
+	}
 	return fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Europe/Minsk",
 		dbConfig.Host,
