@@ -4,19 +4,30 @@ import (
 	"TestProject/Config"
 	"TestProject/Models"
 	"TestProject/Routes"
-	"gorm.io/driver/mysql"
+	"TestProject/Util"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"os"
 )
 
+var PORT = "8080"
+
 func main() {
+	initializeDB()
+	r := Routes.SetupRouter()
+	port := os.Getenv("PORT")
+	if Util.IsEmpty(port) {
+		port = PORT
+	}
+	_ = r.Run(":" + port)
+}
+
+func initializeDB() {
 	url := Config.DbURL(Config.BuildDBConfig())
-	db, err := gorm.Open(mysql.Open(url), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 	if err != nil {
 		panic(err.Error())
 	}
 	Config.DB = db
-	Config.DB.AutoMigrate(&Models.User{})
-	r := Routes.SetupRouter()
-	//running
-	err = r.Run(":8080")
+	_ = Config.DB.AutoMigrate(&Models.User{})
 }
