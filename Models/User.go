@@ -38,7 +38,7 @@ func GetUserByCreds(user *User, userRequest User) (err error) {
 	return err
 }
 
-func GetUserByLogin(userRequest User) (err error) {
+func CheckUserExistsByLogin(userRequest User) (err error) {
 	user := User{}
 	err = Config.DB.Where("Login = ?", userRequest.Login).First(&user).Error
 	if err == nil {

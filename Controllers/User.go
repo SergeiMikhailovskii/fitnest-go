@@ -44,7 +44,7 @@ func RegisterUser(c *gin.Context) {
 	var userRequest Models.User
 	_ = c.BindJSON(&userRequest)
 
-	err := Models.GetUserByLogin(userRequest)
+	err := Models.CheckUserExistsByLogin(userRequest)
 
 	if errors.Is(err, Errors.UserExists) {
 		c.JSON(http.StatusOK, Base.Response{
