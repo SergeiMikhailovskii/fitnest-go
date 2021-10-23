@@ -8,6 +8,6 @@ import (
 func SetupMainRoute(r *gin.Engine) {
 	authGroup := r.Group("/main")
 	{
-		authGroup.GET("", Controllers.GenerateToken)
+		authGroup.GET("", Controllers.GetMainPage)
 	}
 }
