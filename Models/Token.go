@@ -1,5 +1,6 @@
 package Models
 
 type Token struct {
-	userId string
+	userId    string
+	visitorId string
 }
