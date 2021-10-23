@@ -7,7 +7,7 @@ import (
 )
 
 func CreateUser(User *User) (err error) {
-	err = Config.DB.Create(User).Error
+	err = Config.DB.Create(&User).Error
 	return err
 }
 
