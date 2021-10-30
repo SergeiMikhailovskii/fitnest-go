@@ -17,7 +17,7 @@ func CheckAuthUserCookie(c *gin.Context) bool {
 		setAuthUserToken(newUser, c)
 		c.JSON(http.StatusUnauthorized, Base.Response{})
 	}
-	return err != nil
+	return err == nil
 }
 
 func createNewUser() Models.User {
