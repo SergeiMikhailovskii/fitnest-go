@@ -71,14 +71,3 @@ func RegisterUser(c *gin.Context) {
 		})
 	}
 }
-
-func GenerateToken(c *gin.Context) {
-	http.SetCookie(c.Writer, &http.Cookie{
-		Name:  "test",
-		Value: "test",
-	})
-	c.JSON(http.StatusOK, Base.Response{
-		Errors: nil,
-		Data:   nil,
-	})
-}

@@ -3,6 +3,7 @@ package Handlers
 import (
 	"TestProject/Models"
 	"TestProject/Models/Base"
+	"TestProject/Models/Onboarding"
 	"TestProject/Util"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -23,6 +24,7 @@ func CheckAuthUserCookie(c *gin.Context) bool {
 func createNewUser() Models.User {
 	newUser := Models.User{}
 	_ = Models.CreateUser(&newUser)
+	_ = Onboarding.CreateDefaultRecord(newUser.ID)
 	return newUser
 }
 
