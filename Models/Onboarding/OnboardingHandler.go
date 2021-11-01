@@ -10,3 +10,8 @@ func CreateDefaultRecord(userId int) error {
 
 	return err
 }
+
+func GetRecordByUserId(userId int, onboarding *Onboarding) error {
+	err := Config.DB.Where("UserID = ?", userId).First(onboarding).Error
+	return err
+}

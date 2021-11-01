@@ -21,6 +21,17 @@ func CheckAuthUserCookie(c *gin.Context) bool {
 	return err == nil
 }
 
+func IsOnboardingFinished(c *gin.Context) bool {
+	cookie, err := c.Cookie(Base.AuthUserCookie.Name)
+	if err != nil {
+		panic(err)
+	}
+
+	Util.ParseJwt(cookie)
+
+	return false
+}
+
 func createNewUser() Models.User {
 	newUser := Models.User{}
 	_ = Models.CreateUser(&newUser)

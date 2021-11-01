@@ -9,6 +9,9 @@ import (
 
 func GetMainPage(c *gin.Context) {
 	if Handlers.CheckAuthUserCookie(c) {
+		if Handlers.IsOnboardingFinished(c) {
+
+		}
 		c.JSON(http.StatusOK, Base.Response{})
 	}
 }
