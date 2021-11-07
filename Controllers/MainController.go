@@ -10,8 +10,13 @@ import (
 func GetMainPage(c *gin.Context) {
 	if Handlers.CheckAuthUserCookie(c) {
 		if Handlers.IsOnboardingFinished(c) {
-
+			c.JSON(http.StatusOK, Base.Response{
+				Flow: "/registration",
+			})
+		} else {
+			c.JSON(http.StatusOK, Base.Response{
+				Flow: "/onboarding",
+			})
 		}
-		c.JSON(http.StatusOK, Base.Response{})
 	}
 }
