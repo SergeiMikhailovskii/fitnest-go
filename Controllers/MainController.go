@@ -8,15 +8,22 @@ import (
 )
 
 func GetMainPage(c *gin.Context) {
-	if Handlers.CheckAuthUserCookie(c) {
+	var responseStatusCode = -1
+	var response Base.Response
+	if Handlers.HasAuthUserCookie(c) {
 		if Handlers.IsOnboardingFinished(c) {
-			c.JSON(http.StatusOK, Base.Response{
-				Flow: "/registration",
-			})
-		} else {
-			c.JSON(http.StatusOK, Base.Response{
+			responseStatusCode = http.StatusOK
+			response = Base.Response{
 				Flow: "/onboarding",
-			})
+			}
+		} else {
+			responseStatusCode = http.StatusOK
+			response = Base.Response{
+				Flow: "/onboarding",
+			}
 		}
+	} else {
+		responseStatusCode, response = Handlers.GenerateAuthUserToken(c)
 	}
+	c.JSON(responseStatusCode, response)
 }

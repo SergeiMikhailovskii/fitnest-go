@@ -9,16 +9,15 @@ import (
 	"net/http"
 )
 
-// CheckAuthUserCookie checks if user has AuthUser cookie and if it exists returns true else setting it,
-// sending response with status unauthorized and returns false
-func CheckAuthUserCookie(c *gin.Context) bool {
+func HasAuthUserCookie(c *gin.Context) bool {
 	_, err := c.Cookie(Base.AuthUserCookie.Name)
-	if err != nil {
-		newUser := createNewUser()
-		setAuthUserToken(newUser, c)
-		c.JSON(http.StatusUnauthorized, Base.Response{})
-	}
 	return err == nil
+}
+
+func GenerateAuthUserToken(c *gin.Context) (int, Base.Response) {
+	newUser := createNewUser()
+	setAuthUserToken(newUser, c)
+	return http.StatusUnauthorized, Base.Response{}
 }
 
 func IsOnboardingFinished(c *gin.Context) bool {
