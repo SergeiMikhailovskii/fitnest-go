@@ -1,8 +1,9 @@
-package Controllers
+package Main
 
 import (
-	"TestProject/Controllers/Handlers"
 	"TestProject/Models/Base"
+	"TestProject/Models/Onboarding"
+	"TestProject/Util"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -10,20 +11,23 @@ import (
 func GetMainPage(c *gin.Context) {
 	var responseStatusCode = -1
 	var response Base.Response
-	if Handlers.HasAuthUserCookie(c) {
-		if Handlers.IsOnboardingFinished(c) {
+	if HasAuthUserCookie(c) {
+		if IsOnboardingFinished(c) {
 			responseStatusCode = http.StatusOK
 			response = Base.Response{
-				Flow: "/onboarding",
+				Flow: Util.AfterOnboarding,
 			}
 		} else {
 			responseStatusCode = http.StatusOK
 			response = Base.Response{
-				Flow: "/onboarding",
+				Data: Onboarding.Response{
+					Step: "Unresolved",
+				},
+				Flow: Util.Onboarding,
 			}
 		}
 	} else {
-		responseStatusCode, response = Handlers.GenerateAuthUserToken(c)
+		responseStatusCode, response = GenerateAuthUserToken(c)
 	}
 	c.JSON(responseStatusCode, response)
 }

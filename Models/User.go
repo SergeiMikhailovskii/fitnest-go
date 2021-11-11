@@ -2,7 +2,7 @@ package Models
 
 import (
 	"TestProject/Config"
-	"TestProject/Errors"
+	"TestProject/Util"
 	"gorm.io/gorm"
 )
 
@@ -33,7 +33,7 @@ func UpdateUser(db *gorm.DB, User *User) (err error) {
 
 func GetUserByCreds(user *User, userRequest User) (err error) {
 	if err = Config.DB.Where("Login = ? AND Password = ?", userRequest.Login, userRequest.Password).First(user).Error; err != nil {
-		err = Errors.UserNotFound
+		err = Util.UserNotFound
 	}
 	return err
 }
@@ -42,9 +42,9 @@ func CheckUserExistsByLogin(userRequest User) (err error) {
 	user := User{}
 	err = Config.DB.Where("Login = ?", userRequest.Login).First(&user).Error
 	if err == nil {
-		err = Errors.UserExists
+		err = Util.UserExists
 	} else {
-		err = Errors.UserNotFound
+		err = Util.UserNotFound
 	}
 	return err
 }

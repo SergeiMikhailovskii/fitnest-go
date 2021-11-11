@@ -1,7 +1,6 @@
-package Controllers
+package User
 
 import (
-	"TestProject/Errors"
 	"TestProject/Models"
 	"TestProject/Models/Base"
 	"TestProject/Util"
@@ -16,7 +15,7 @@ func LoginUser(c *gin.Context) {
 	_ = c.BindJSON(&userRequest)
 	err := Models.GetUserByCreds(&userResponse, userRequest)
 
-	if errors.Is(err, Errors.UserNotFound) {
+	if errors.Is(err, Util.UserNotFound) {
 		c.JSON(http.StatusOK, Base.Response{
 			Errors: []Base.Error{{
 				Field:   "login",
@@ -27,7 +26,7 @@ func LoginUser(c *gin.Context) {
 	} else if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		authUserToken, _ := Util.GenerateJwt(userResponse.ID)
+		authUserToken, _ := Models.GenerateJwt(userResponse.ID)
 		http.SetCookie(c.Writer, &http.Cookie{
 			Name:  "AuthUser",
 			Value: authUserToken,
@@ -46,7 +45,7 @@ func RegisterUser(c *gin.Context) {
 
 	err := Models.CheckUserExistsByLogin(userRequest)
 
-	if errors.Is(err, Errors.UserExists) {
+	if errors.Is(err, Util.UserExists) {
 		c.JSON(http.StatusOK, Base.Response{
 			Errors: []Base.Error{{
 				Field:   "login",
@@ -55,7 +54,7 @@ func RegisterUser(c *gin.Context) {
 			Data: nil,
 		})
 		return
-	} else if errors.Is(err, Errors.UserNotFound) {
+	} else if errors.Is(err, Util.UserNotFound) {
 		Models.CreateUser(&userRequest)
 		c.JSON(http.StatusOK, Base.Response{
 			Errors: nil,

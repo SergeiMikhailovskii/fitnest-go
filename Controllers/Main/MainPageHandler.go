@@ -1,4 +1,4 @@
-package Handlers
+package Main
 
 import (
 	"TestProject/Models"
@@ -26,7 +26,7 @@ func IsOnboardingFinished(c *gin.Context) bool {
 		panic(err)
 	}
 
-	Util.ParseJwt(cookie)
+	Models.ParseJwt(cookie)
 
 	return false
 }
@@ -39,7 +39,7 @@ func createNewUser() Models.User {
 }
 
 func setAuthUserToken(user Models.User, c *gin.Context) {
-	token, _ := Util.GenerateJwt(user.ID)
+	token, _ := Models.GenerateJwt(user.ID)
 	Base.AuthUserCookie.Value = token
 	Util.SetDefaultCookie(c, Base.AuthUserCookie)
 }
