@@ -19,7 +19,14 @@ func SubmitStep(c *gin.Context) {
 	var responseStatusCode = -1
 	var response Base.Response
 	response.Flow = "/onboarding"
-	step := submitOnboardingStep(c)
-	response.Data = Onboarding.Response{Step: step}
+	err := submitOnboardingStep(c)
+	if err != nil {
+		response.Errors = []Base.Error{
+			{
+				Field:   "onboarding",
+				Message: err.Error(),
+			},
+		}
+	}
 	c.JSON(responseStatusCode, response)
 }

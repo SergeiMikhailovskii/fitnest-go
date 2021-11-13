@@ -4,20 +4,20 @@ import (
 	"TestProject/Models"
 	"TestProject/Models/Base"
 	"TestProject/Models/Onboarding"
+	"TestProject/Util"
 	"github.com/gin-gonic/gin"
 )
 
+func IsOnboardingFinished(c *gin.Context) bool {
+	onboardingRecord := getOnboardingRecord(c)
+	return onboardingRecord.FirstStepComplete &&
+		onboardingRecord.SecondStepComplete &&
+		onboardingRecord.ThirdStepComplete &&
+		onboardingRecord.ForthStepComplete
+}
+
 func getOnboardingStep(c *gin.Context) string {
-	cookie, err := c.Cookie(Base.AuthUserCookie.Name)
-	if err != nil {
-		panic(err)
-	}
-
-	user := Models.ParseJwt(cookie)
-
-	onboardingRecord := Onboarding.Onboarding{}
-	_ = Onboarding.GetOnboardingRecordByUserId(user.ID, &onboardingRecord)
-
+	onboardingRecord := getOnboardingRecord(c)
 	if onboardingRecord.ForthStepComplete {
 		return "after"
 	} else if onboardingRecord.ThirdStepComplete {
@@ -33,18 +33,12 @@ func getOnboardingStep(c *gin.Context) string {
 	}
 }
 
-func submitOnboardingStep(c *gin.Context) string {
-	cookie, err := c.Cookie(Base.AuthUserCookie.Name)
-	if err != nil {
-		panic(err)
-	}
+func submitOnboardingStep(c *gin.Context) error {
+	onboardingRecord := getOnboardingRecord(c)
 
-	user := Models.ParseJwt(cookie)
-
-	onboardingRecord := Onboarding.Onboarding{}
-	_ = Onboarding.GetOnboardingRecordByUserId(user.ID, &onboardingRecord)
-
-	if !onboardingRecord.FirstStepComplete {
+	if IsOnboardingFinished(c) {
+		return Util.OnboardingFinished
+	} else if !onboardingRecord.FirstStepComplete {
 		onboardingRecord.FirstStepComplete = true
 	} else if !onboardingRecord.SecondStepComplete {
 		onboardingRecord.SecondStepComplete = true
@@ -52,11 +46,19 @@ func submitOnboardingStep(c *gin.Context) string {
 		onboardingRecord.ThirdStepComplete = true
 	} else if !onboardingRecord.ForthStepComplete {
 		onboardingRecord.ForthStepComplete = true
-	} else {
-		return "error"
 	}
 
-	Onboarding.UpdateOnboardingRecord(onboardingRecord)
+	return Onboarding.UpdateOnboardingRecord(onboardingRecord)
+}
 
-	return "success"
+func getOnboardingRecord(c *gin.Context) Onboarding.Onboarding {
+	cookie, err := c.Cookie(Base.AuthUserCookie.Name)
+	if err != nil {
+		panic(err)
+	}
+
+	user := Models.ParseJwt(cookie)
+	onboardingRecord := Onboarding.Onboarding{}
+	_ = Onboarding.GetOnboardingRecordByUserId(user.ID, &onboardingRecord)
+	return onboardingRecord
 }
