@@ -12,6 +12,6 @@ func CreateDefaultRecord(userId int) error {
 }
 
 func GetRecordByUserId(userId int, onboarding *Onboarding) error {
-	err := Config.DB.Where("UserID = ?", userId).First(onboarding).Error
+	err := Config.DB.Where("user_id = ?", userId).First(onboarding).Error
 	return err
 }

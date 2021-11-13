@@ -21,7 +21,7 @@ func GetMainPage(c *gin.Context) {
 			responseStatusCode = http.StatusOK
 			response = Base.Response{
 				Data: Onboarding.Response{
-					Step: "Unresolved",
+					Step: GetOnboardingStep(c),
 				},
 				Flow: Util.Onboarding,
 			}

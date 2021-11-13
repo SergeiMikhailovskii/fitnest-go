@@ -31,6 +31,30 @@ func IsOnboardingFinished(c *gin.Context) bool {
 	return false
 }
 
+func GetOnboardingStep(c *gin.Context) string {
+	cookie, err := c.Cookie(Base.AuthUserCookie.Name)
+	if err != nil {
+		panic(err)
+	}
+
+	user := Models.ParseJwt(cookie)
+
+	onboardingRecord := Onboarding.Onboarding{}
+	_ = Onboarding.GetRecordByUserId(user.ID, &onboardingRecord)
+
+	if !onboardingRecord.FirstStepComplete {
+		return "step1"
+	} else if onboardingRecord.FirstStepComplete {
+		return "step2"
+	} else if onboardingRecord.SecondStepComplete {
+		return "step3"
+	} else if onboardingRecord.ThirdStepComplete {
+		return "after"
+	} else {
+		return "undefined"
+	}
+}
+
 func createNewUser() Models.User {
 	newUser := Models.User{}
 	_ = Models.CreateUser(&newUser)
