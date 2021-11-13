@@ -1,8 +1,10 @@
 package Onboarding
 
-import "TestProject/Config"
+import (
+	"TestProject/Config"
+)
 
-func CreateDefaultRecord(userId int) error {
+func CreateOnboardingDefaultRecord(userId int) error {
 	onboardingRecord := Onboarding{
 		UserID: userId,
 	}
@@ -11,7 +13,12 @@ func CreateDefaultRecord(userId int) error {
 	return err
 }
 
-func GetRecordByUserId(userId int, onboarding *Onboarding) error {
+func GetOnboardingRecordByUserId(userId int, onboarding *Onboarding) error {
 	err := Config.DB.Where("user_id = ?", userId).First(onboarding).Error
+	return err
+}
+
+func UpdateOnboardingRecord(onboarding Onboarding) error {
+	err := Config.DB.Save(onboarding).Error
 	return err
 }

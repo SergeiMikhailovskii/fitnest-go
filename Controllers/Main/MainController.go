@@ -2,7 +2,6 @@ package Main
 
 import (
 	"TestProject/Models/Base"
-	"TestProject/Models/Onboarding"
 	"TestProject/Util"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -20,9 +19,6 @@ func GetMainPage(c *gin.Context) {
 		} else {
 			responseStatusCode = http.StatusOK
 			response = Base.Response{
-				Data: Onboarding.Response{
-					Step: GetOnboardingStep(c),
-				},
 				Flow: Util.Onboarding,
 			}
 		}

@@ -8,5 +8,6 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	SetupAuthRoute(r)
 	SetupMainRoute(r)
+	SetupOnboardingRoute(r)
 	return r
 }
