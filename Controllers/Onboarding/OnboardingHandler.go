@@ -16,20 +16,20 @@ func IsOnboardingFinished(c *gin.Context) bool {
 		onboardingRecord.ForthStepComplete
 }
 
-func getOnboardingStep(c *gin.Context) string {
+func getOnboardingStep(c *gin.Context) (string, error) {
 	onboardingRecord := getOnboardingRecord(c)
 	if onboardingRecord.ForthStepComplete {
-		return "STEP_AFTER_ONBOARDING"
+		return "", Util.OnboardingFinished
 	} else if onboardingRecord.ThirdStepComplete {
-		return "STEP_FORTH_ONBOARDING"
+		return "STEP_FORTH_ONBOARDING", nil
 	} else if onboardingRecord.SecondStepComplete {
-		return "STEP_THIRD_ONBOARDING"
+		return "STEP_THIRD_ONBOARDING", nil
 	} else if onboardingRecord.FirstStepComplete {
-		return "STEP_SECOND_ONBOARDING"
+		return "STEP_SECOND_ONBOARDING", nil
 	} else if !onboardingRecord.FirstStepComplete {
-		return "STEP_FIRST_ONBOARDING"
+		return "STEP_FIRST_ONBOARDING", nil
 	} else {
-		return "STEP_UNDEFINED_ONBOARDING"
+		return "", Util.OnboardingStepNotFound
 	}
 }
 
