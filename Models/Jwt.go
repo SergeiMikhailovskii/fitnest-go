@@ -1,4 +1,4 @@
-package Util
+package Models
 
 import (
 	"fmt"
@@ -20,4 +20,18 @@ func GenerateJwt(userId int) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func ParseJwt(token string) User {
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte("8kkeN4jhL4F84qfw"), nil
+	})
+
+	if err != nil {
+		panic(err)
+	}
+	return User{
+		ID: int(claims["userId"].(float64)),
+	}
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"TestProject/Config"
 	"TestProject/Models"
+	"TestProject/Models/Onboarding"
 	"TestProject/Routes"
 	"TestProject/Util"
 	"gorm.io/driver/postgres"
@@ -29,5 +30,5 @@ func initializeDB() {
 		panic(err.Error())
 	}
 	Config.DB = db
-	_ = Config.DB.AutoMigrate(&Models.User{})
+	_ = Config.DB.AutoMigrate(&Models.User{}, &Onboarding.Onboarding{})
 }
