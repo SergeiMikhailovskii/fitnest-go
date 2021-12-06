@@ -2,6 +2,7 @@ package Main
 
 import (
 	"TestProject/Controllers/Onboarding"
+	"TestProject/Controllers/Registration"
 	"TestProject/Models/Base"
 	"TestProject/Util"
 	"github.com/gin-gonic/gin"
@@ -12,15 +13,20 @@ func GetMainPage(c *gin.Context) {
 	var responseStatusCode = -1
 	var response Base.Response
 	if HasAuthUserCookie(c) {
-		if Onboarding.IsOnboardingFinished(c) {
+		if !Onboarding.IsOnboardingFinished(c) {
 			responseStatusCode = http.StatusOK
 			response = Base.Response{
-				Flow: Util.AfterOnboarding,
+				Flow: Util.Onboarding,
+			}
+		} else if !Registration.IsRegistrationFinished(c) {
+			responseStatusCode = http.StatusOK
+			response = Base.Response{
+				Flow: Util.Registration,
 			}
 		} else {
 			responseStatusCode = http.StatusOK
 			response = Base.Response{
-				Flow: Util.Onboarding,
+				Flow: Util.AfterOnboarding,
 			}
 		}
 	} else {
