@@ -18,8 +18,9 @@ func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
 	primaryRegistrationRecord := getPrimaryRegistrationRecord(c)
 	if !areFirstStepFieldsFilled(primaryRegistrationRecord) {
 		return &Registration.Response{
-			Step:   "STEP_CREATE_ACCOUNT",
-			Fields: Registration.CreateStepModel{},
+			Step:             "STEP_CREATE_ACCOUNT",
+			Fields:           Registration.CreateStepModel{},
+			ValidationSchema: Registration.CreateStepValidationSchema,
 		}, nil
 	} else {
 		return nil, Util.RegistrationStepNotFound
