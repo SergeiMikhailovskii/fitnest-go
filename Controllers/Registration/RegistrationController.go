@@ -2,7 +2,6 @@ package Registration
 
 import (
 	"TestProject/Models/Base"
-	"TestProject/Models/Onboarding"
 	"TestProject/Util"
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +10,7 @@ func GetStep(c *gin.Context) {
 	var responseStatusCode = -1
 	var response Base.Response
 	response.Flow = Util.Registration
-	step, err := getRegistrationStep(c)
+	data, err := getRegistrationStep(c)
 	if err != nil {
 		response.Errors = []Base.Error{
 			{
@@ -20,7 +19,7 @@ func GetStep(c *gin.Context) {
 			},
 		}
 	}
-	response.Data = Onboarding.Response{Step: step}
+	response.Data = &data
 	c.JSON(responseStatusCode, response)
 }
 

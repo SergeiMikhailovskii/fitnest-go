@@ -14,12 +14,15 @@ func IsRegistrationFinished(c *gin.Context) bool {
 		primaryRegistrationRecord.Sex != ""
 }
 
-func getRegistrationStep(c *gin.Context) (string, error) {
+func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
 	primaryRegistrationRecord := getPrimaryRegistrationRecord(c)
 	if !areFirstStepFieldsFilled(primaryRegistrationRecord) {
-		return "STEP_CREATE_ACCOUNT", nil
+		return &Registration.Response{
+			Step:   "STEP_CREATE_ACCOUNT",
+			Fields: Registration.CreateStepModel{},
+		}, nil
 	} else {
-		return "", Util.RegistrationStepNotFound
+		return nil, Util.RegistrationStepNotFound
 	}
 }
 
