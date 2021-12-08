@@ -1,55 +1,30 @@
 package Registration
 
+import "TestProject/Models/Base"
+
 type CreateStepValidationSchemaType struct {
-	FirstName []Validator `json:"first_name"`
-	LastName  []Validator `json:"last_name"`
-	Email     []Validator `json:"email"`
-	Password  []Validator `json:"password"`
-}
-
-type Validator struct {
-	Type       string      `json:"type"`
-	Error      string      `json:"error"`
-	Validation interface{} `json:"validation"`
-}
-
-func RequiredValidator() Validator {
-	return Validator{
-		Type:  "required",
-		Error: "error.required",
-	}
-}
-
-func RegExpValidator(validation string) Validator {
-	return Validator{
-		Type:       "regExp",
-		Error:      "error.invalid",
-		Validation: validation,
-	}
-}
-
-func OnlyLettersValidator() Validator {
-	return RegExpValidator("^[a-zA-Z]+$")
-}
-
-func EmailValidator() Validator {
-	return RegExpValidator(".{5,}@.{2,}\\..{2,}")
+	FirstName []Base.Validator `json:"first_name"`
+	LastName  []Base.Validator `json:"last_name"`
+	Email     []Base.Validator `json:"email"`
+	Password  []Base.Validator `json:"password"`
 }
 
 var CreateStepValidationSchema = CreateStepValidationSchemaType{
-	FirstName: []Validator{
-		RequiredValidator(),
-		OnlyLettersValidator(),
+	FirstName: []Base.Validator{
+		Base.RequiredValidator(),
+		Base.OnlyLettersValidator(),
 	},
-	LastName: []Validator{
-		RequiredValidator(),
-		OnlyLettersValidator(),
+	LastName: []Base.Validator{
+		Base.RequiredValidator(),
+		Base.OnlyLettersValidator(),
 	},
-	Email: []Validator{
-		RequiredValidator(),
-		EmailValidator(),
+	Email: []Base.Validator{
+		Base.RequiredValidator(),
+		Base.EmailValidator(),
 	},
-	Password: []Validator{
-		RequiredValidator(),
+	Password: []Base.Validator{
+		Base.RequiredValidator(),
+		Base.RegExpValidator("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*_)[a-zA-Z0-9_]+$"),
+		Base.MinLengthValidator(5),
 	},
 }
