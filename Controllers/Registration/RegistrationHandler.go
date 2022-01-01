@@ -62,7 +62,7 @@ func areFirstStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo
 }
 
 func areSecondStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo) bool {
-	hasAnthropometryRecord, _ := Anthropometry.HasAnthropometryRecordByUserId(1)
+	hasAnthropometryRecord := Anthropometry.HasAnthropometryRecordByUserId(1)
 	return primaryRegistrationRecord.Sex != "" &&
 		primaryRegistrationRecord.BirthDate.IsZero() &&
 		!hasAnthropometryRecord
