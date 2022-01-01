@@ -31,5 +31,10 @@ func initializeDB() {
 		panic(err.Error())
 	}
 	Config.DB = db
-	_ = Config.DB.AutoMigrate(&Models.User{}, &Onboarding.Onboarding{}, &Registration.PrimaryInfo{})
+	_ = Config.DB.AutoMigrate(
+		&Models.User{},
+		&Onboarding.Onboarding{},
+		&Registration.PrimaryInfo{},
+		&Registration.AnthropometryModel{},
+	)
 }
