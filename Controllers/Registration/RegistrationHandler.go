@@ -27,6 +27,31 @@ func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
 	}
 }
 
+func submitRegistrationStep(c *gin.Context) error {
+	primaryRegistrationRecord := getPrimaryRegistrationRecord(c)
+	if !areFirstStepFieldsFilled(primaryRegistrationRecord) {
+		return submitFirstRegistrationStep(c)
+	}
+	return Util.RegistrationStepNotFound
+}
+
+func submitFirstRegistrationStep(c *gin.Context) error {
+	cookie, err := c.Cookie(Base.AuthUserCookie.Name)
+	if err != nil {
+		return err
+	}
+
+	user := Models.ParseJwt(cookie)
+	requestBody := Registration.CreateStepModel{}
+	err = c.BindJSON(&requestBody)
+	if err != nil {
+		return err
+	}
+
+	err = Registration.SaveCreateAccountRegistrationRecordByUserId(user.ID, requestBody)
+	return err
+}
+
 func areFirstStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo) bool {
 	return primaryRegistrationRecord.FirstName != "" &&
 		primaryRegistrationRecord.LastName != "" &&

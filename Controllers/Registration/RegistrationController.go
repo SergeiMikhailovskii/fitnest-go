@@ -24,5 +24,17 @@ func GetStep(c *gin.Context) {
 }
 
 func SubmitStep(c *gin.Context) {
-
+	var responseStatusCode = 200
+	var response Base.Response
+	response.Flow = Util.Registration
+	err := submitRegistrationStep(c)
+	if err != nil {
+		response.Errors = []Base.Error{
+			{
+				Field:   "registration",
+				Message: err.Error(),
+			},
+		}
+	}
+	c.JSON(responseStatusCode, response)
 }
