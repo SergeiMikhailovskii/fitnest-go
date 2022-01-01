@@ -29,6 +29,38 @@ func MinLengthValidator(length int) Validator {
 	}
 }
 
+func MinAgeValidator(age int) Validator {
+	return Validator{
+		Type:       "minAge",
+		Error:      "error.minAge",
+		Validation: age,
+	}
+}
+
+func MaxAgeValidator(age int) Validator {
+	return Validator{
+		Type:       "maxAge",
+		Error:      "error.maxAge",
+		Validation: age,
+	}
+}
+
+func MinValueValidator(value int) Validator {
+	return Validator{
+		Type:       "minValue",
+		Error:      "error.minValue",
+		Validation: value,
+	}
+}
+
+func MaxValueValidator(value int) Validator {
+	return Validator{
+		Type:       "maxValue",
+		Error:      "error.maxValue",
+		Validation: value,
+	}
+}
+
 func OnlyLettersValidator() Validator {
 	return RegExpValidator("^[a-zA-Z]+$")
 }

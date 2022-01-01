@@ -27,7 +27,7 @@ func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
 		return &Registration.Response{
 			Step:             "STEP_COMPLETE_ACCOUNT",
 			Fields:           Registration.CompleteStepModel{},
-			ValidationSchema: Registration.CreateStepValidationSchema,
+			ValidationSchema: Registration.CompleteStepValidationSchema,
 		}, nil
 	} else {
 		return nil, Util.RegistrationStepNotFound
