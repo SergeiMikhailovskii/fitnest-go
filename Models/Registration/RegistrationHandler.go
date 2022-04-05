@@ -42,6 +42,16 @@ func SaveCompleteAccountRegistrationRecordByUserId(userId int, model CompleteSte
 		Sex:       model.Sex,
 		BirthDate: date,
 	}
+	anthropometryRecord := AnthropometryModel{
+		UserID: userId,
+		Height: model.Height,
+		Weight: model.Weight,
+	}
 	err = Config.DB.Where("user_id = ?", userId).Updates(primaryRecord).Error
+	if err != nil {
+		return err
+	}
+
+	err = Config.DB.Create(&anthropometryRecord).Error
 	return err
 }
