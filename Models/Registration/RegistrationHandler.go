@@ -2,6 +2,8 @@ package Registration
 
 import (
 	"TestProject/Config"
+	"TestProject/Util"
+	"time"
 )
 
 func CreatePrimaryRegistrationRecord(userId int) error {
@@ -27,5 +29,19 @@ func SaveCreateAccountRegistrationRecordByUserId(userId int, model CreateStepMod
 		Email:     model.Email,
 	}
 	err := Config.DB.Where("user_id = ?", userId).Updates(primaryRecord).Error
+	return err
+}
+
+func SaveCompleteAccountRegistrationRecordByUserId(userId int, model CompleteStepModel) error {
+	date, err := time.Parse(Util.DD_MM_YYYY, model.DateOfBirth)
+	if err != nil {
+		return err
+	}
+	primaryRecord := PrimaryInfo{
+		UserID:    userId,
+		Sex:       model.Sex,
+		BirthDate: date,
+	}
+	err = Config.DB.Where("user_id = ?", userId).Updates(primaryRecord).Error
 	return err
 }
