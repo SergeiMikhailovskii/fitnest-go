@@ -2,6 +2,7 @@ package Registration
 
 import (
 	"TestProject/Controllers/Anthropometry"
+	"TestProject/Controllers/Goal"
 	"TestProject/Models"
 	"TestProject/Models/Base"
 	"TestProject/Models/Registration"
@@ -29,8 +30,14 @@ func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
 			Fields:           Registration.CompleteStepModel{},
 			ValidationSchema: Registration.CompleteStepValidationSchema,
 		}, nil
+	} else if !areThirdStepFieldsFilled(primaryRegistrationRecord) {
+		return &Registration.Response{
+			Step:             "STEP_GOAL",
+			Fields:           Registration.GoalStepModel{},
+			ValidationSchema: Registration.GoalStepValidationSchema,
+		}, nil
 	} else {
-		return nil, Util.RegistrationStepNotFound
+		return nil, Util.RegistrationFinished
 	}
 }
 
@@ -76,11 +83,15 @@ func areFirstStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo
 }
 
 func areSecondStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo) bool {
-	hasAnthropometryRecord := Anthropometry.HasAnthropometryRecordByUserId(1)
+	hasAnthropometryRecord := Anthropometry.HasAnthropometryRecordByUserId(primaryRegistrationRecord.UserID)
 	return primaryRegistrationRecord.Sex != "" &&
 		primaryRegistrationRecord.BirthDate.IsZero() &&
 		!hasAnthropometryRecord
+}
 
+func areThirdStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo) bool {
+	hasGoalRecord := Goal.HasGoalRecordByUserId(primaryRegistrationRecord.UserID)
+	return hasGoalRecord
 }
 
 func getPrimaryRegistrationRecord(c *gin.Context) Registration.PrimaryInfo {

@@ -61,6 +61,14 @@ func MaxValueValidator(value int) Validator {
 	}
 }
 
+func EnumValidator(value []string) Validator {
+	return Validator{
+		Type:       "enum",
+		Error:      "error.invalid",
+		Validation: value,
+	}
+}
+
 func OnlyLettersValidator() Validator {
 	return RegExpValidator("^[a-zA-Z]+$")
 }
