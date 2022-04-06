@@ -55,3 +55,13 @@ func SaveCompleteAccountRegistrationRecordByUserId(userId int, model CompleteSte
 	err = Config.DB.Create(&anthropometryRecord).Error
 	return err
 }
+
+func SaveGoalRegistrationRecordByUserId(userId int, model GoalStepModel) error {
+	anthropometryRecord := GoalModel{
+		UserID: userId,
+		Goal:   model.Goal,
+	}
+
+	err := Config.DB.Create(&anthropometryRecord).Error
+	return err
+}

@@ -47,6 +47,8 @@ func submitRegistrationStep(c *gin.Context) error {
 		return submitFirstRegistrationStep(c)
 	} else if !areSecondStepFieldsFilled(primaryRegistrationRecord) {
 		return submitSecondRegistrationStep(c)
+	} else if !areThirdStepFieldsFilled(primaryRegistrationRecord) {
+		return submitThirdRegistrationStep(c)
 	}
 	return Util.RegistrationStepNotFound
 }
@@ -72,6 +74,18 @@ func submitSecondRegistrationStep(c *gin.Context) error {
 	}
 
 	err = Registration.SaveCompleteAccountRegistrationRecordByUserId(userId, requestBody)
+	return err
+}
+
+func submitThirdRegistrationStep(c *gin.Context) error {
+	userId, err := getUserId(c)
+	requestBody := Registration.GoalStepModel{}
+	err = c.BindJSON(&requestBody)
+	if err != nil {
+		return err
+	}
+
+	err = Registration.SaveGoalRegistrationRecordByUserId(userId, requestBody)
 	return err
 }
 
