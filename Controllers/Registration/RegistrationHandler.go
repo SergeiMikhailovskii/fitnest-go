@@ -99,8 +99,8 @@ func areFirstStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo
 func areSecondStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo) bool {
 	hasAnthropometryRecord := Anthropometry.HasAnthropometryRecordByUserId(primaryRegistrationRecord.UserID)
 	return primaryRegistrationRecord.Sex != "" &&
-		primaryRegistrationRecord.BirthDate.IsZero() &&
-		!hasAnthropometryRecord
+		!primaryRegistrationRecord.BirthDate.IsZero() &&
+		hasAnthropometryRecord
 }
 
 func areThirdStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo) bool {
