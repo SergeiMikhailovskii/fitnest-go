@@ -13,7 +13,8 @@ import (
 func IsRegistrationFinished(c *gin.Context) bool {
 	primaryRegistrationRecord := getPrimaryRegistrationRecord(c)
 	return areFirstStepFieldsFilled(primaryRegistrationRecord) &&
-		primaryRegistrationRecord.Sex != ""
+		areSecondStepFieldsFilled(primaryRegistrationRecord) &&
+		areThirdStepFieldsFilled(primaryRegistrationRecord)
 }
 
 func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
