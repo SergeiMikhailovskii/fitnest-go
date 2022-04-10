@@ -41,9 +41,8 @@ func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
 		}, nil
 	} else if !areForthStepFieldsFilled(primaryRegistrationRecord) {
 		return &Registration.Response{
-			Step:             "STEP_WELCOME_BACK",
-			Fields:           getForthStepFields(c),
-			ValidationSchema: nil,
+			Step:   "STEP_WELCOME_BACK",
+			Fields: getForthStepFields(c),
 		}, nil
 	} else {
 		return nil, Util.RegistrationFinished
