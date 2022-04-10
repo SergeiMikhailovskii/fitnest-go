@@ -36,5 +36,6 @@ func initializeDB() {
 		&Onboarding.Onboarding{},
 		&Registration.PrimaryInfo{},
 		&Registration.AnthropometryModel{},
+		&Registration.GoalModel{},
 	)
 }
