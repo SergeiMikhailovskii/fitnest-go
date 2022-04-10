@@ -37,6 +37,12 @@ func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
 			Fields:           Registration.GoalStepModel{},
 			ValidationSchema: Registration.GoalStepValidationSchema,
 		}, nil
+	} else if !areForthStepFieldsFilled(primaryRegistrationRecord) {
+		return &Registration.Response{
+			Step:             "STEP_WELCOME_BACK",
+			Fields:           Registration.WelcomeBackStepModel{},
+			ValidationSchema: nil,
+		}, nil
 	} else {
 		return nil, Util.RegistrationFinished
 	}
@@ -50,6 +56,8 @@ func submitRegistrationStep(c *gin.Context) error {
 		return submitSecondRegistrationStep(c)
 	} else if !areThirdStepFieldsFilled(primaryRegistrationRecord) {
 		return submitThirdRegistrationStep(c)
+	} else if !areForthStepFieldsFilled(primaryRegistrationRecord) {
+		return submitForthRegistrationStep(c)
 	}
 	return Util.RegistrationStepNotFound
 }
@@ -90,6 +98,16 @@ func submitThirdRegistrationStep(c *gin.Context) error {
 	return err
 }
 
+func submitForthRegistrationStep(c *gin.Context) error {
+	userId, err := getUserId(c)
+	if err != nil {
+		return err
+	}
+
+	err = Registration.SaveWelcomeBackRegistrationRecordByUserId(userId)
+	return err
+}
+
 func areFirstStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo) bool {
 	return primaryRegistrationRecord.FirstName != "" &&
 		primaryRegistrationRecord.LastName != "" &&
@@ -107,6 +125,10 @@ func areSecondStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInf
 func areThirdStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo) bool {
 	hasGoalRecord := Goal.HasGoalRecordByUserId(primaryRegistrationRecord.UserID)
 	return hasGoalRecord
+}
+
+func areForthStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo) bool {
+	return primaryRegistrationRecord.WelcomeBackSubmit
 }
 
 func getPrimaryRegistrationRecord(c *gin.Context) Registration.PrimaryInfo {

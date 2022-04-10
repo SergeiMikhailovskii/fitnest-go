@@ -65,3 +65,13 @@ func SaveGoalRegistrationRecordByUserId(userId int, model GoalStepModel) error {
 	err := Config.DB.Create(&goalRecord).Error
 	return err
 }
+
+func SaveWelcomeBackRegistrationRecordByUserId(userId int) error {
+	goalRecord := PrimaryInfo{
+		UserID:            userId,
+		WelcomeBackSubmit: true,
+	}
+
+	err := Config.DB.Create(&goalRecord).Error
+	return err
+}
