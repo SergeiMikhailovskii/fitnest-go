@@ -12,9 +12,11 @@ import (
 
 func IsRegistrationFinished(c *gin.Context) bool {
 	primaryRegistrationRecord := getPrimaryRegistrationRecord(c)
+
 	return areFirstStepFieldsFilled(primaryRegistrationRecord) &&
 		areSecondStepFieldsFilled(primaryRegistrationRecord) &&
-		areThirdStepFieldsFilled(primaryRegistrationRecord)
+		areThirdStepFieldsFilled(primaryRegistrationRecord) &&
+		areForthStepFieldsFilled(primaryRegistrationRecord)
 }
 
 func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
@@ -40,7 +42,7 @@ func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
 	} else if !areForthStepFieldsFilled(primaryRegistrationRecord) {
 		return &Registration.Response{
 			Step:             "STEP_WELCOME_BACK",
-			Fields:           Registration.WelcomeBackStepModel{},
+			Fields:           getForthStepFields(c),
 			ValidationSchema: nil,
 		}, nil
 	} else {
@@ -136,6 +138,16 @@ func getPrimaryRegistrationRecord(c *gin.Context) Registration.PrimaryInfo {
 	primaryRegistrationRecord := Registration.PrimaryInfo{}
 	_ = Registration.GetPrimaryRegistrationRecordByUserId(userId, &primaryRegistrationRecord)
 	return primaryRegistrationRecord
+}
+
+func getForthStepFields(c *gin.Context) Registration.WelcomeBackStepModel {
+	userId, _ := getUserId(c)
+	primaryRegistrationRecord := Registration.PrimaryInfo{}
+	_ = Registration.GetPrimaryRegistrationRecordByUserId(userId, &primaryRegistrationRecord)
+
+	return Registration.WelcomeBackStepModel{
+		Name: primaryRegistrationRecord.FirstName,
+	}
 }
 
 func getUserId(c *gin.Context) (int, error) {

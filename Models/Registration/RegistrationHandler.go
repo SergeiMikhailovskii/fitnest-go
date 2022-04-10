@@ -67,11 +67,11 @@ func SaveGoalRegistrationRecordByUserId(userId int, model GoalStepModel) error {
 }
 
 func SaveWelcomeBackRegistrationRecordByUserId(userId int) error {
-	goalRecord := PrimaryInfo{
+	primaryRecord := PrimaryInfo{
 		UserID:            userId,
 		WelcomeBackSubmit: true,
 	}
 
-	err := Config.DB.Create(&goalRecord).Error
+	err := Config.DB.Where("user_id = ?", userId).Updates(primaryRecord).Error
 	return err
 }
