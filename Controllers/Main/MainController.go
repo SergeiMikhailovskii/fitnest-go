@@ -26,7 +26,7 @@ func GetMainPage(c *gin.Context) {
 		} else {
 			responseStatusCode = http.StatusOK
 			response = Base.Response{
-				Flow: Util.AfterOnboarding,
+				Flow: Util.Main,
 			}
 		}
 	} else {
