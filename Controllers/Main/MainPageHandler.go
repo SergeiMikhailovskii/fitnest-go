@@ -18,7 +18,9 @@ func HasAuthUserCookie(c *gin.Context) bool {
 func GenerateAuthUserToken(c *gin.Context) (int, Base.Response) {
 	newUser := createNewUser()
 	setAuthUserToken(newUser, c)
-	return http.StatusUnauthorized, Base.Response{}
+	return http.StatusOK, Base.Response{
+		Flow: Util.Onboarding,
+	}
 }
 
 func createNewUser() Models.User {
