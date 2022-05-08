@@ -10,5 +10,6 @@ func SetupRouter() *gin.Engine {
 	SetupRegistrationRoute(r)
 	SetupFlowRoute(r)
 	SetupOnboardingRoute(r)
+	SetupPrivateAreaRoute(r)
 	return r
 }

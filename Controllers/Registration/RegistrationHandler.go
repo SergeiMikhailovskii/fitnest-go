@@ -1,8 +1,8 @@
 package Registration
 
 import (
-	"TestProject/Controllers/Anthropometry"
-	"TestProject/Controllers/Goal"
+	"TestProject/Controllers/Registration/Anthropometry"
+	"TestProject/Controllers/Registration/Goal"
 	"TestProject/Models"
 	"TestProject/Models/Base"
 	"TestProject/Models/Registration"

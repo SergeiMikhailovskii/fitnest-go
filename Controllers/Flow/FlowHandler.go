@@ -1,4 +1,4 @@
-package Main
+package Flow
 
 import (
 	"TestProject/Models"
