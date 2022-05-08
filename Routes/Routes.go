@@ -8,7 +8,7 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 	SetupAuthRoute(r)
 	SetupRegistrationRoute(r)
-	SetupMainRoute(r)
+	SetupFlowRoute(r)
 	SetupOnboardingRoute(r)
 	return r
 }

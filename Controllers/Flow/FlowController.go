@@ -1,6 +1,7 @@
-package Main
+package Flow
 
 import (
+	"TestProject/Controllers/Main"
 	"TestProject/Controllers/Onboarding"
 	"TestProject/Controllers/Registration"
 	"TestProject/Models/Base"
@@ -9,10 +10,10 @@ import (
 	"net/http"
 )
 
-func GetMainPage(c *gin.Context) {
+func GetFlow(c *gin.Context) {
 	var responseStatusCode = -1
 	var response Base.Response
-	if HasAuthUserCookie(c) {
+	if Main.HasAuthUserCookie(c) {
 		if !Onboarding.IsOnboardingFinished(c) {
 			responseStatusCode = http.StatusOK
 			response = Base.Response{
@@ -30,7 +31,7 @@ func GetMainPage(c *gin.Context) {
 			}
 		}
 	} else {
-		responseStatusCode, response = GenerateAuthUserToken(c)
+		responseStatusCode, response = Main.GenerateAuthUserToken(c)
 	}
 	c.JSON(responseStatusCode, response)
 }
