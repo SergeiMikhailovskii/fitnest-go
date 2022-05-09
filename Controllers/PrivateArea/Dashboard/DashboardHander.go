@@ -1,8 +1,10 @@
 package Dashboard
 
 import (
+	"TestProject/Config"
 	"TestProject/Controllers/Registration"
 	"TestProject/Models/PrivateArea"
+	"TestProject/Models/PrivateArea/DB"
 	"TestProject/Models/PrivateArea/Widgets"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -26,9 +28,16 @@ func getHeaderWidget(c *gin.Context) Widgets.HeaderWidget {
 	primaryRecord := Registration.GetPrimaryRegistrationRecord(c)
 	userName := primaryRecord.FirstName + " " + primaryRecord.LastName
 
+	userId, _ := Registration.GetUserId(c)
+
+	var activeNotificationsAmount int64
+	Config.DB.Model(&DB.Notification{}).
+		Where("is_active = ? AND user_id = ?", true, userId).
+		Count(&activeNotificationsAmount)
+
 	return Widgets.HeaderWidget{
 		Name:          userName,
-		Notifications: 0,
+		Notifications: activeNotificationsAmount,
 	}
 }
 

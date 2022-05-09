@@ -64,7 +64,7 @@ func submitRegistrationStep(c *gin.Context) error {
 }
 
 func submitFirstRegistrationStep(c *gin.Context) error {
-	userId, err := getUserId(c)
+	userId, err := GetUserId(c)
 	requestBody := Registration.CreateStepModel{}
 	err = c.BindJSON(&requestBody)
 	if err != nil {
@@ -76,7 +76,7 @@ func submitFirstRegistrationStep(c *gin.Context) error {
 }
 
 func submitSecondRegistrationStep(c *gin.Context) error {
-	userId, err := getUserId(c)
+	userId, err := GetUserId(c)
 	requestBody := Registration.CompleteStepModel{}
 	err = c.BindJSON(&requestBody)
 	if err != nil {
@@ -88,7 +88,7 @@ func submitSecondRegistrationStep(c *gin.Context) error {
 }
 
 func submitThirdRegistrationStep(c *gin.Context) error {
-	userId, err := getUserId(c)
+	userId, err := GetUserId(c)
 	requestBody := Registration.GoalStepModel{}
 	err = c.BindJSON(&requestBody)
 	if err != nil {
@@ -100,7 +100,7 @@ func submitThirdRegistrationStep(c *gin.Context) error {
 }
 
 func submitForthRegistrationStep(c *gin.Context) error {
-	userId, err := getUserId(c)
+	userId, err := GetUserId(c)
 	if err != nil {
 		return err
 	}
@@ -133,14 +133,14 @@ func areForthStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo
 }
 
 func GetPrimaryRegistrationRecord(c *gin.Context) Registration.PrimaryInfo {
-	userId, _ := getUserId(c)
+	userId, _ := GetUserId(c)
 	primaryRegistrationRecord := Registration.PrimaryInfo{}
 	_ = Registration.GetPrimaryRegistrationRecordByUserId(userId, &primaryRegistrationRecord)
 	return primaryRegistrationRecord
 }
 
 func getForthStepFields(c *gin.Context) Registration.WelcomeBackStepModel {
-	userId, _ := getUserId(c)
+	userId, _ := GetUserId(c)
 	primaryRegistrationRecord := Registration.PrimaryInfo{}
 	_ = Registration.GetPrimaryRegistrationRecordByUserId(userId, &primaryRegistrationRecord)
 
@@ -149,7 +149,7 @@ func getForthStepFields(c *gin.Context) Registration.WelcomeBackStepModel {
 	}
 }
 
-func getUserId(c *gin.Context) (int, error) {
+func GetUserId(c *gin.Context) (int, error) {
 	cookie, err := c.Cookie(Base.AuthUserCookie.Name)
 	if err != nil {
 		return -1, err

@@ -4,6 +4,7 @@ import (
 	"TestProject/Config"
 	"TestProject/Models"
 	"TestProject/Models/Onboarding"
+	"TestProject/Models/PrivateArea/DB"
 	"TestProject/Models/Registration"
 	"TestProject/Routes"
 	"TestProject/Util"
@@ -37,5 +38,6 @@ func initializeDB() {
 		&Registration.PrimaryInfo{},
 		&Registration.AnthropometryModel{},
 		&Registration.GoalModel{},
+		&DB.Notification{},
 	)
 }
