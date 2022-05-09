@@ -11,7 +11,7 @@ import (
 )
 
 func IsRegistrationFinished(c *gin.Context) bool {
-	primaryRegistrationRecord := getPrimaryRegistrationRecord(c)
+	primaryRegistrationRecord := GetPrimaryRegistrationRecord(c)
 
 	return areFirstStepFieldsFilled(primaryRegistrationRecord) &&
 		areSecondStepFieldsFilled(primaryRegistrationRecord) &&
@@ -20,7 +20,7 @@ func IsRegistrationFinished(c *gin.Context) bool {
 }
 
 func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
-	primaryRegistrationRecord := getPrimaryRegistrationRecord(c)
+	primaryRegistrationRecord := GetPrimaryRegistrationRecord(c)
 	if !areFirstStepFieldsFilled(primaryRegistrationRecord) {
 		return &Registration.Response{
 			Step:             "STEP_CREATE_ACCOUNT",
@@ -50,7 +50,7 @@ func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
 }
 
 func submitRegistrationStep(c *gin.Context) error {
-	primaryRegistrationRecord := getPrimaryRegistrationRecord(c)
+	primaryRegistrationRecord := GetPrimaryRegistrationRecord(c)
 	if !areFirstStepFieldsFilled(primaryRegistrationRecord) {
 		return submitFirstRegistrationStep(c)
 	} else if !areSecondStepFieldsFilled(primaryRegistrationRecord) {
@@ -132,7 +132,7 @@ func areForthStepFieldsFilled(primaryRegistrationRecord Registration.PrimaryInfo
 	return primaryRegistrationRecord.WelcomeBackSubmit
 }
 
-func getPrimaryRegistrationRecord(c *gin.Context) Registration.PrimaryInfo {
+func GetPrimaryRegistrationRecord(c *gin.Context) Registration.PrimaryInfo {
 	userId, _ := getUserId(c)
 	primaryRegistrationRecord := Registration.PrimaryInfo{}
 	_ = Registration.GetPrimaryRegistrationRecordByUserId(userId, &primaryRegistrationRecord)

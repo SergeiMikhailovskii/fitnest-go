@@ -1,15 +1,17 @@
 package Dashboard
 
 import (
+	"TestProject/Controllers/Registration"
 	"TestProject/Models/PrivateArea"
 	"TestProject/Models/PrivateArea/Widgets"
+	"github.com/gin-gonic/gin"
 	"time"
 )
 
-func GetDashboardPage() (*PrivateArea.Response, error) {
+func GetDashboardPage(c *gin.Context) (*PrivateArea.Response, error) {
 	widgetsMap := make(map[string]interface{})
 
-	widgetsMap["HEADER_WIDGET"] = getHeaderWidget()
+	widgetsMap["HEADER_WIDGET"] = getHeaderWidget(c)
 	widgetsMap["BMI_WIDGET"] = getBMIWidget()
 	widgetsMap["TODAY_TARGET_WIDGET"] = getTodayTargetWidget()
 	widgetsMap["ACTIVITY_STATUS_WIDGET"] = getActivityStatusWidget()
@@ -20,9 +22,12 @@ func GetDashboardPage() (*PrivateArea.Response, error) {
 	}, nil
 }
 
-func getHeaderWidget() Widgets.HeaderWidget {
+func getHeaderWidget(c *gin.Context) Widgets.HeaderWidget {
+	primaryRecord := Registration.GetPrimaryRegistrationRecord(c)
+	userName := primaryRecord.FirstName + " " + primaryRecord.LastName
+
 	return Widgets.HeaderWidget{
-		Name:          "Stefani Wong",
+		Name:          userName,
 		Notifications: 0,
 	}
 }

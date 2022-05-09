@@ -17,7 +17,7 @@ func GetPage(c *gin.Context) {
 
 	switch page {
 	case "DASHBOARD":
-		data, err = Dashboard.GetDashboardPage()
+		data, err = Dashboard.GetDashboardPage(c)
 	}
 	if err != nil {
 		response.Errors = []Base.Error{
