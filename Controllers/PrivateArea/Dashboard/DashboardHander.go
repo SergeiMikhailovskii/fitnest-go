@@ -6,7 +6,9 @@ import (
 	"TestProject/Models/PrivateArea"
 	"TestProject/Models/PrivateArea/DB"
 	"TestProject/Models/PrivateArea/Widgets"
+	RegistrationModel "TestProject/Models/Registration"
 	"github.com/gin-gonic/gin"
+	"math"
 	"time"
 )
 
@@ -14,7 +16,7 @@ func GetDashboardPage(c *gin.Context) (*PrivateArea.Response, error) {
 	widgetsMap := make(map[string]interface{})
 
 	widgetsMap["HEADER_WIDGET"] = getHeaderWidget(c)
-	widgetsMap["BMI_WIDGET"] = getBMIWidget()
+	widgetsMap["BMI_WIDGET"] = getBMIWidget(c)
 	widgetsMap["TODAY_TARGET_WIDGET"] = getTodayTargetWidget()
 	widgetsMap["ACTIVITY_STATUS_WIDGET"] = getActivityStatusWidget()
 	widgetsMap["LATEST_WORKOUT_WIDGET"] = getLatestWorkoutWidget()
@@ -41,10 +43,19 @@ func getHeaderWidget(c *gin.Context) Widgets.HeaderWidget {
 	}
 }
 
-func getBMIWidget() Widgets.BMIWidget {
+func getBMIWidget(c *gin.Context) Widgets.BMIWidget {
+	userId, _ := Registration.GetUserId(c)
+
+	var anthropometryModel RegistrationModel.AnthropometryModel
+
+	Config.DB.Where("user_id = ?", userId).First(&anthropometryModel)
+
+	bmiValue := anthropometryModel.Weight / (math.Pow(anthropometryModel.Height/100, 2))
+	bmiStatus := getBMIStatusByValue(bmiValue)
+
 	return Widgets.BMIWidget{
-		Index:  20.1,
-		Result: "NORMAL_WEIGHT",
+		Index:  bmiValue,
+		Result: bmiStatus,
 	}
 }
 
@@ -119,5 +130,17 @@ func getLatestWorkoutWidget() Widgets.LatestWorkoutWidget {
 				Progress: 0.3,
 			},
 		},
+	}
+}
+
+func getBMIStatusByValue(value float64) string {
+	if value < 18.5 {
+		return "UNDERWEIGHT"
+	} else if value < 25 {
+		return "NORMAL_WEIGHT"
+	} else if value < 30 {
+		return "OVERWEIGHT"
+	} else {
+		return "OBESITY"
 	}
 }
