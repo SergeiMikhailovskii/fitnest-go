@@ -39,5 +39,6 @@ func initializeDB() {
 		&Registration.AnthropometryModel{},
 		&Registration.GoalModel{},
 		&DB.Notification{},
+		&DB.HeartRate{},
 	)
 }

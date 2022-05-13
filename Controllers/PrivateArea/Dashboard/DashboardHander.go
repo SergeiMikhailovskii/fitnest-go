@@ -18,7 +18,7 @@ func GetDashboardPage(c *gin.Context) (*PrivateArea.Response, error) {
 	widgetsMap["HEADER_WIDGET"] = getHeaderWidget(c)
 	widgetsMap["BMI_WIDGET"] = getBMIWidget(c)
 	widgetsMap["TODAY_TARGET_WIDGET"] = getTodayTargetWidget()
-	widgetsMap["ACTIVITY_STATUS_WIDGET"] = getActivityStatusWidget()
+	widgetsMap["ACTIVITY_STATUS_WIDGET"] = getActivityStatusWidget(c)
 	widgetsMap["LATEST_WORKOUT_WIDGET"] = getLatestWorkoutWidget()
 
 	return &PrivateArea.Response{
@@ -43,32 +43,51 @@ func getHeaderWidget(c *gin.Context) Widgets.HeaderWidget {
 	}
 }
 
-func getBMIWidget(c *gin.Context) Widgets.BMIWidget {
+func getBMIWidget(c *gin.Context) *Widgets.BMIWidget {
 	userId, _ := Registration.GetUserId(c)
 
 	var anthropometryModel RegistrationModel.AnthropometryModel
 
-	Config.DB.Where("user_id = ?", userId).First(&anthropometryModel)
+	err := Config.DB.Where("user_id = ?", userId).First(&anthropometryModel).Error
 
 	bmiValue := anthropometryModel.Weight / (math.Pow(anthropometryModel.Height/100, 2))
 	bmiStatus := getBMIStatusByValue(bmiValue)
 
-	return Widgets.BMIWidget{
-		Index:  bmiValue,
-		Result: bmiStatus,
+	var response *Widgets.BMIWidget
+	if err == nil {
+		response = &Widgets.BMIWidget{
+			Index:  bmiValue,
+			Result: bmiStatus,
+		}
+	} else {
+		response = nil
 	}
+
+	return response
 }
 
 func getTodayTargetWidget() Widgets.TodayTargetWidget {
 	return Widgets.TodayTargetWidget{}
 }
 
-func getActivityStatusWidget() Widgets.ActivityStatusWidget {
+func getActivityStatusWidget(c *gin.Context) Widgets.ActivityStatusWidget {
+	userId, _ := Registration.GetUserId(c)
+
+	heartRate, date, err := getLastHeartRate(userId)
+
+	var heartRateWidget *Widgets.HeartRateSubWidget
+
+	if err == nil {
+		heartRateWidget = &Widgets.HeartRateSubWidget{
+			Rate: heartRate,
+			Date: date,
+		}
+	} else {
+		heartRateWidget = nil
+	}
+
 	return Widgets.ActivityStatusWidget{
-		HeartRate: Widgets.HeartRateSubWidget{
-			Rate: 78,
-			Date: time.Now(),
-		},
+		HeartRate: heartRateWidget,
 		WaterIntake: Widgets.WaterIntakeSubWidget{
 			Amount:   4,
 			Progress: 0.5,
@@ -143,4 +162,10 @@ func getBMIStatusByValue(value float64) string {
 	} else {
 		return "OBESITY"
 	}
+}
+
+func getLastHeartRate(userId int) (int, time.Time, error) {
+	var heartRateModel DB.HeartRate
+	err := Config.DB.Where("user_id = ?", userId).Last(&heartRateModel).Error
+	return heartRateModel.Rate, heartRateModel.Date, err
 }

@@ -3,7 +3,7 @@ package Widgets
 import "time"
 
 type ActivityStatusWidget struct {
-	HeartRate   HeartRateSubWidget   `json:"heart_rate"`
+	HeartRate   *HeartRateSubWidget  `json:"heart_rate"`
 	WaterIntake WaterIntakeSubWidget `json:"water_intake"`
 	Sleep       SleepSubWidget       `json:"sleep"`
 	Calories    CaloriesSubWidget    `json:"calories"`
