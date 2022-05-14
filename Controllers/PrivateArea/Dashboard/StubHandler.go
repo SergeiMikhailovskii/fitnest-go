@@ -18,7 +18,7 @@ func GenerateNotificationsStub(userId int) {
 	}
 }
 
-func GenerateWorkouts() {
+func GenerateWorkoutsStub() {
 	for i := 0; i < 10; i++ {
 		workout := DB.Workout{
 			Name:     fmt.Sprintf("Test Workout %d", i),
@@ -29,7 +29,7 @@ func GenerateWorkouts() {
 	}
 }
 
-func GenerateUserWorkouts(userId int) {
+func GenerateUserWorkoutsStub(userId int) {
 	for i := 1; i <= 5; i++ {
 		userWorkout := DB.UserWorkout{
 			UserId:    userId,
@@ -37,6 +37,20 @@ func GenerateUserWorkouts(userId int) {
 			Progress:  0.1 * float32(i),
 		}
 		err := Config.DB.Create(&userWorkout).Error
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func GenerateWaterIntakeStub(userId int) {
+	for i := 1; i <= 20; i++ {
+		waterIntake := DB.WaterIntake{
+			UserId: userId,
+			Time:   time.Now().Add(-time.Hour * time.Duration(i)),
+			Amount: 100 * i,
+		}
+		err := Config.DB.Create(&waterIntake).Error
 		if err != nil {
 			panic(err)
 		}

@@ -42,5 +42,6 @@ func initializeDB() {
 		&DB.HeartRate{},
 		&DB.Workout{},
 		&DB.UserWorkout{},
+		&DB.WaterIntake{},
 	)
 }
