@@ -74,6 +74,7 @@ func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
 	heartRate, date, err := getLastHeartRate(userId)
 
 	var heartRateWidget *Widgets.HeartRateSubWidget
+	var waterIntakeSubWidget *Widgets.WaterIntakeSubWidget
 
 	if err == nil {
 		heartRateWidget = &Widgets.HeartRateSubWidget{
@@ -84,34 +85,21 @@ func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
 		heartRateWidget = nil
 	}
 
-	return Widgets.ActivityStatusWidget{
-		HeartRate: heartRateWidget,
-		WaterIntake: Widgets.WaterIntakeSubWidget{
+	err, intakes := getWaterIntakes(userId)
+	if err == nil {
+		widgetIntakes := mapDBIntakesToWidget(intakes)
+		waterIntakeSubWidget = &Widgets.WaterIntakeSubWidget{
 			Amount:   4,
 			Progress: 0.5,
-			Intakes: []Widgets.WaterIntake{
-				{
-					TimeDiapason:   "6am - 8am",
-					AmountInMillis: 600,
-				},
-				{
-					TimeDiapason:   "9am - 11am",
-					AmountInMillis: 500,
-				},
-				{
-					TimeDiapason:   "11am - 2pm",
-					AmountInMillis: 1000,
-				},
-				{
-					TimeDiapason:   "2pm - 4pm",
-					AmountInMillis: 700,
-				},
-				{
-					TimeDiapason:   "4pm - now",
-					AmountInMillis: 900,
-				},
-			},
-		},
+			Intakes:  widgetIntakes,
+		}
+	} else {
+		waterIntakeSubWidget = nil
+	}
+
+	return Widgets.ActivityStatusWidget{
+		HeartRate:   heartRateWidget,
+		WaterIntake: waterIntakeSubWidget,
 		Sleep: Widgets.SleepSubWidget{
 			Duration: Widgets.SleepDuration{
 				Hours:   8,
@@ -173,4 +161,35 @@ func getLastWorkouts(userId int) (error, []Widgets.Workout) {
 		}
 		return nil, workouts
 	}
+}
+
+func getWaterIntakes(userId int) (error, []DB.WaterIntake) {
+	rows, err := Config.DB.Model(&DB.WaterIntake{}).Where("user_id = ?", userId).Rows()
+	if err != nil {
+		return err, nil
+	} else {
+		var intakes []DB.WaterIntake
+		for rows.Next() {
+			var intake DB.WaterIntake
+			err = Config.DB.ScanRows(rows, &intake)
+
+			if err != nil {
+				return err, nil
+			}
+
+			intakes = append(intakes, intake)
+		}
+		return nil, intakes
+	}
+}
+
+func mapDBIntakesToWidget(intakes []DB.WaterIntake) []Widgets.WaterIntake {
+	var widgetIntakes []Widgets.WaterIntake
+	for _, item := range intakes {
+		widgetIntakes = append(widgetIntakes, Widgets.WaterIntake{
+			TimeDiapason:   item.Time.String(),
+			AmountInMillis: item.Amount,
+		})
+	}
+	return widgetIntakes
 }
