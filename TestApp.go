@@ -40,5 +40,7 @@ func initializeDB() {
 		&Registration.GoalModel{},
 		&DB.Notification{},
 		&DB.HeartRate{},
+		&DB.Workout{},
+		&DB.UserWorkout{},
 	)
 }

@@ -17,3 +17,24 @@ func GenerateNotificationsStub(userId int) {
 		Config.DB.Create(&notification)
 	}
 }
+
+func GenerateWorkouts() {
+	for i := 0; i < 10; i++ {
+		workout := DB.Workout{
+			Name:     fmt.Sprintf("Test Workout %d", i),
+			Calories: i * 100,
+			Minutes:  i * 5,
+		}
+		Config.DB.Create(&workout)
+	}
+}
+
+func GenerateUserWorkouts(userId int) {
+	for i := 0; i < 10; i++ {
+		userWorkout := DB.UserWorkout{
+			UserId:   userId,
+			Progress: 0.1 * float32(i),
+		}
+		Config.DB.Create(&userWorkout)
+	}
+}
