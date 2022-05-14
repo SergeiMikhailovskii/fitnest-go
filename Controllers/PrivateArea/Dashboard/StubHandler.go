@@ -30,11 +30,15 @@ func GenerateWorkouts() {
 }
 
 func GenerateUserWorkouts(userId int) {
-	for i := 0; i < 10; i++ {
+	for i := 1; i <= 5; i++ {
 		userWorkout := DB.UserWorkout{
-			UserId:   userId,
-			Progress: 0.1 * float32(i),
+			UserId:    userId,
+			WorkoutId: i,
+			Progress:  0.1 * float32(i),
 		}
-		Config.DB.Create(&userWorkout)
+		err := Config.DB.Create(&userWorkout).Error
+		if err != nil {
+			panic(err)
+		}
 	}
 }

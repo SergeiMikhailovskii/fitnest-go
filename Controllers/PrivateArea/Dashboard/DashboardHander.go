@@ -13,24 +13,24 @@ import (
 )
 
 func GetDashboardPage(c *gin.Context) (*PrivateArea.Response, error) {
+	userId, _ := Registration.GetUserId(c)
+
 	widgetsMap := make(map[string]interface{})
 
-	widgetsMap["HEADER_WIDGET"] = getHeaderWidget(c)
+	widgetsMap["HEADER_WIDGET"] = getHeaderWidget(c, userId)
 	widgetsMap["BMI_WIDGET"] = getBMIWidget(c)
 	widgetsMap["TODAY_TARGET_WIDGET"] = getTodayTargetWidget()
-	widgetsMap["ACTIVITY_STATUS_WIDGET"] = getActivityStatusWidget(c)
-	widgetsMap["LATEST_WORKOUT_WIDGET"] = getLatestWorkoutWidget()
+	widgetsMap["ACTIVITY_STATUS_WIDGET"] = getActivityStatusWidget(userId)
+	widgetsMap["LATEST_WORKOUT_WIDGET"] = getLatestWorkoutWidget(userId)
 
 	return &PrivateArea.Response{
 		Widgets: widgetsMap,
 	}, nil
 }
 
-func getHeaderWidget(c *gin.Context) Widgets.HeaderWidget {
+func getHeaderWidget(c *gin.Context, userId int) Widgets.HeaderWidget {
 	primaryRecord := Registration.GetPrimaryRegistrationRecord(c)
 	userName := primaryRecord.FirstName + " " + primaryRecord.LastName
-
-	userId, _ := Registration.GetUserId(c)
 
 	var activeNotificationsAmount int64
 	Config.DB.Model(&DB.Notification{}).
@@ -70,9 +70,7 @@ func getTodayTargetWidget() Widgets.TodayTargetWidget {
 	return Widgets.TodayTargetWidget{}
 }
 
-func getActivityStatusWidget(c *gin.Context) Widgets.ActivityStatusWidget {
-	userId, _ := Registration.GetUserId(c)
-
+func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
 	heartRate, date, err := getLastHeartRate(userId)
 
 	var heartRateWidget *Widgets.HeartRateSubWidget
@@ -127,28 +125,15 @@ func getActivityStatusWidget(c *gin.Context) Widgets.ActivityStatusWidget {
 	}
 }
 
-func getLatestWorkoutWidget() Widgets.LatestWorkoutWidget {
-	return Widgets.LatestWorkoutWidget{
-		Workouts: []Widgets.Workout{
-			{
-				Name:     "Fullbody Workout",
-				Calories: 180,
-				Minutes:  20,
-				Progress: 0.5,
-			},
-			{
-				Name:     "Lowerbody Workout",
-				Calories: 200,
-				Minutes:  30,
-				Progress: 0.4,
-			},
-			{
-				Name:     "Ab Workout",
-				Calories: 220,
-				Minutes:  40,
-				Progress: 0.3,
-			},
-		},
+func getLatestWorkoutWidget(userId int) *Widgets.LatestWorkoutWidget {
+	err, lastWorkouts := getLastWorkouts(userId)
+
+	if err != nil {
+		return nil
+	} else {
+		return &Widgets.LatestWorkoutWidget{
+			Workouts: lastWorkouts,
+		}
 	}
 }
 
@@ -168,4 +153,24 @@ func getLastHeartRate(userId int) (int, time.Time, error) {
 	var heartRateModel DB.HeartRate
 	err := Config.DB.Where("user_id = ?", userId).Last(&heartRateModel).Error
 	return heartRateModel.Rate, heartRateModel.Date, err
+}
+
+func getLastWorkouts(userId int) (error, []Widgets.Workout) {
+	rows, err := Config.DB.Model(&DB.UserWorkout{}).Select("user_workout.progress, workout.name, workout.calories, workout.minutes").Joins("inner join workout on workout.id = user_workout.workout_id").Where("user_id = ?", userId).Rows()
+	if err != nil {
+		return err, nil
+	} else {
+		var workouts []Widgets.Workout
+		for rows.Next() {
+			var workout Widgets.Workout
+			err = Config.DB.ScanRows(rows, &workout)
+
+			if err != nil {
+				return err, nil
+			}
+
+			workouts = append(workouts, workout)
+		}
+		return nil, workouts
+	}
 }
