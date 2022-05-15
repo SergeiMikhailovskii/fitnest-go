@@ -76,6 +76,7 @@ func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
 
 	var heartRateWidget *Widgets.HeartRateSubWidget
 	var waterIntakeSubWidget *Widgets.WaterIntakeSubWidget
+	var caloriesSubWidget *Widgets.CaloriesSubWidget
 
 	if heartRateErr == nil {
 		heartRateWidget = &Widgets.HeartRateSubWidget{
@@ -101,14 +102,32 @@ func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
 		waterIntakeSubWidget = nil
 	}
 
+	calories, caloriesErr := getCaloriesAim(userId)
+
+	if caloriesErr != nil {
+		caloriesSubWidget = nil
+	} else {
+		consumedCalories, consumedCaloriesErr := getCaloriesIntakes(userId)
+
+		if consumedCaloriesErr != nil {
+			caloriesSubWidget = nil
+		} else {
+			caloriesLeft := calories - consumedCalories
+			if caloriesLeft < 0 {
+				caloriesLeft = 0
+			}
+			caloriesSubWidget = &Widgets.CaloriesSubWidget{
+				Consumed: consumedCalories,
+				Left:     caloriesLeft,
+			}
+		}
+	}
+
 	return Widgets.ActivityStatusWidget{
 		HeartRate:   heartRateWidget,
 		WaterIntake: waterIntakeSubWidget,
 		Sleep:       getSleepDuration(userId),
-		Calories: Widgets.CaloriesSubWidget{
-			Consumed: 760,
-			Left:     230,
-		},
+		Calories:    caloriesSubWidget,
 	}
 }
 
@@ -188,6 +207,26 @@ func getWaterIntakes(userId int) (error, []DB.WaterIntake) {
 	}
 }
 
+func getCaloriesIntakes(userId int) (int, error) {
+	rows, err := Config.DB.Model(&DB.CaloriesIntake{}).Where("user_id = ?", userId).Rows()
+	if err != nil {
+		return 0, err
+	} else {
+		total := 0
+		for rows.Next() {
+			var intake DB.CaloriesIntake
+			err = Config.DB.ScanRows(rows, &intake)
+
+			if err != nil {
+				return 0, err
+			}
+
+			total += intake.Amount
+		}
+		return total, nil
+	}
+}
+
 func getTotalTodayWaterIntake(intakes []DB.WaterIntake) int {
 	total := 0
 	for _, intake := range intakes {
@@ -209,6 +248,12 @@ func getSleepDuration(userId int) *Widgets.SleepSubWidget {
 			Minutes: int(duration.Minutes()) - int(duration.Hours())*60,
 		}
 	}
+}
+
+func getCaloriesAim(userId int) (int, error) {
+	var waterIntakeAim DB.ActivityAim
+	err := Config.DB.Where("user_id = ?", userId).Last(&waterIntakeAim).Error
+	return waterIntakeAim.CaloriesAmount, err
 }
 
 func mapDBIntakesToWidget(intakes []DB.WaterIntake) []Widgets.WaterIntake {

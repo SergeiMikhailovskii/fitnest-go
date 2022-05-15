@@ -45,5 +45,6 @@ func initializeDB() {
 		&DB.WaterIntake{},
 		&DB.ActivityAim{},
 		&DB.SleepTime{},
+		&DB.CaloriesIntake{},
 	)
 }
