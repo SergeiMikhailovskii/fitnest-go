@@ -71,12 +71,13 @@ func getTodayTargetWidget() Widgets.TodayTargetWidget {
 }
 
 func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
-	heartRate, date, err := getLastHeartRate(userId)
+	heartRate, date, heartRateErr := getLastHeartRate(userId)
+	waterIntakeAim, waterIntakeAimErr := getWaterIntakeAim(userId)
 
 	var heartRateWidget *Widgets.HeartRateSubWidget
 	var waterIntakeSubWidget *Widgets.WaterIntakeSubWidget
 
-	if err == nil {
+	if heartRateErr == nil {
 		heartRateWidget = &Widgets.HeartRateSubWidget{
 			Rate: heartRate,
 			Date: date,
@@ -85,12 +86,15 @@ func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
 		heartRateWidget = nil
 	}
 
-	err, intakes := getWaterIntakes(userId)
-	if err == nil {
+	waterIntakeErr, intakes := getWaterIntakes(userId)
+
+	if waterIntakeAimErr == nil && waterIntakeErr == nil {
 		widgetIntakes := mapDBIntakesToWidget(intakes)
+		totalTodayWaterIntake := getTotalTodayWaterIntake(intakes)
+
 		waterIntakeSubWidget = &Widgets.WaterIntakeSubWidget{
-			Amount:   4,
-			Progress: 0.5,
+			Amount:   waterIntakeAim,
+			Progress: float32(totalTodayWaterIntake / waterIntakeAim),
 			Intakes:  widgetIntakes,
 		}
 	} else {
@@ -143,6 +147,12 @@ func getLastHeartRate(userId int) (int, time.Time, error) {
 	return heartRateModel.Rate, heartRateModel.Date, err
 }
 
+func getWaterIntakeAim(userId int) (int, error) {
+	var waterIntakeAim DB.WaterIntakeAim
+	err := Config.DB.Where("user_id = ?", userId).Last(&waterIntakeAim).Error
+	return waterIntakeAim.Amount, err
+}
+
 func getLastWorkouts(userId int) (error, []Widgets.Workout) {
 	rows, err := Config.DB.Model(&DB.UserWorkout{}).Select("user_workout.progress, workout.name, workout.calories, workout.minutes").Joins("inner join workout on workout.id = user_workout.workout_id").Where("user_id = ?", userId).Rows()
 	if err != nil {
@@ -181,6 +191,14 @@ func getWaterIntakes(userId int) (error, []DB.WaterIntake) {
 		}
 		return nil, intakes
 	}
+}
+
+func getTotalTodayWaterIntake(intakes []DB.WaterIntake) int {
+	total := 0
+	for _, intake := range intakes {
+		total += intake.Amount
+	}
+	return total
 }
 
 func mapDBIntakesToWidget(intakes []DB.WaterIntake) []Widgets.WaterIntake {

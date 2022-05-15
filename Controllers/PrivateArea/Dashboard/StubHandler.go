@@ -56,3 +56,14 @@ func GenerateWaterIntakeStub(userId int) {
 		}
 	}
 }
+
+func GenerateWaterIntakeAimStub(userId int) {
+	waterIntakeAim := DB.WaterIntakeAim{
+		UserId: userId,
+		Amount: 4000,
+	}
+	err := Config.DB.Create(&waterIntakeAim).Error
+	if err != nil {
+		panic(err)
+	}
+}
