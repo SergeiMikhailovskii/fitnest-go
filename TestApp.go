@@ -4,6 +4,7 @@ import (
 	"TestProject/Config"
 	"TestProject/Models"
 	"TestProject/Models/Onboarding"
+	"TestProject/Models/PrivateArea/DB"
 	"TestProject/Models/Registration"
 	"TestProject/Routes"
 	"TestProject/Util"
@@ -37,5 +38,13 @@ func initializeDB() {
 		&Registration.PrimaryInfo{},
 		&Registration.AnthropometryModel{},
 		&Registration.GoalModel{},
+		&DB.Notification{},
+		&DB.HeartRate{},
+		&DB.Workout{},
+		&DB.UserWorkout{},
+		&DB.WaterIntake{},
+		&DB.ActivityAim{},
+		&DB.SleepTime{},
+		&DB.CaloriesIntake{},
 	)
 }

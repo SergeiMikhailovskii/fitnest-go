@@ -8,7 +8,6 @@ import (
 func SetupAuthRoute(r *gin.Engine) {
 	authGroup := r.Group("/auth")
 	{
-		authGroup.POST("login", User.LoginUser)
-		authGroup.POST("register", User.RegisterUser)
+		authGroup.GET("token/:userId", User.GenerateToken)
 	}
 }
