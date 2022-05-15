@@ -58,11 +58,24 @@ func GenerateWaterIntakeStub(userId int) {
 }
 
 func GenerateWaterIntakeAimStub(userId int) {
-	waterIntakeAim := DB.WaterIntakeAim{
-		UserId: userId,
-		Amount: 4000,
+	waterIntakeAim := DB.ActivityAim{
+		UserId:            userId,
+		WaterIntakeAmount: 4000,
+		CaloriesAmount:    1000,
 	}
 	err := Config.DB.Create(&waterIntakeAim).Error
+	if err != nil {
+		panic(err)
+	}
+}
+
+func GenerateSleepTimeStub(userId int) {
+	sleepTime := DB.SleepTime{
+		UserId: userId,
+		From:   time.Now().Add(-time.Hour * 8),
+		To:     time.Now(),
+	}
+	err := Config.DB.Create(&sleepTime).Error
 	if err != nil {
 		panic(err)
 	}

@@ -104,12 +104,7 @@ func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
 	return Widgets.ActivityStatusWidget{
 		HeartRate:   heartRateWidget,
 		WaterIntake: waterIntakeSubWidget,
-		Sleep: Widgets.SleepSubWidget{
-			Duration: Widgets.SleepDuration{
-				Hours:   8,
-				Minutes: 20,
-			},
-		},
+		Sleep:       getSleepDuration(userId),
 		Calories: Widgets.CaloriesSubWidget{
 			Consumed: 760,
 			Left:     230,
@@ -148,9 +143,9 @@ func getLastHeartRate(userId int) (int, time.Time, error) {
 }
 
 func getWaterIntakeAim(userId int) (int, error) {
-	var waterIntakeAim DB.WaterIntakeAim
+	var waterIntakeAim DB.ActivityAim
 	err := Config.DB.Where("user_id = ?", userId).Last(&waterIntakeAim).Error
-	return waterIntakeAim.Amount, err
+	return waterIntakeAim.WaterIntakeAmount, err
 }
 
 func getLastWorkouts(userId int) (error, []Widgets.Workout) {
@@ -199,6 +194,21 @@ func getTotalTodayWaterIntake(intakes []DB.WaterIntake) int {
 		total += intake.Amount
 	}
 	return total
+}
+
+func getSleepDuration(userId int) *Widgets.SleepSubWidget {
+	var sleepTime DB.SleepTime
+	err := Config.DB.Where("user_id = ?", userId).Last(&sleepTime).Error
+
+	if err != nil {
+		return nil
+	} else {
+		duration := sleepTime.To.Sub(sleepTime.From)
+		return &Widgets.SleepSubWidget{
+			Hours:   int(duration.Hours()),
+			Minutes: int(duration.Minutes()) - int(duration.Hours())*60,
+		}
+	}
 }
 
 func mapDBIntakesToWidget(intakes []DB.WaterIntake) []Widgets.WaterIntake {
