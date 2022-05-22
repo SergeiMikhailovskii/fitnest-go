@@ -17,11 +17,11 @@ func GetDashboardPage(c *gin.Context) (*PrivateArea.Response, error) {
 
 	widgetsMap := make(map[string]interface{})
 
-	widgetsMap["HEADER_WIDGET"] = getHeaderWidget(c, userId)
-	widgetsMap["BMI_WIDGET"] = getBMIWidget(c)
-	widgetsMap["TODAY_TARGET_WIDGET"] = getTodayTargetWidget()
-	widgetsMap["ACTIVITY_STATUS_WIDGET"] = getActivityStatusWidget(userId)
-	widgetsMap["LATEST_WORKOUT_WIDGET"] = getLatestWorkoutWidget(userId)
+	widgetsMap[PrivateArea.HeaderWidget] = getHeaderWidget(c, userId)
+	widgetsMap[PrivateArea.BmiWidget] = getBMIWidget(c)
+	widgetsMap[PrivateArea.TodayTargetWidget] = getTodayTargetWidget()
+	widgetsMap[PrivateArea.ActivityStatusWidget] = getActivityStatusWidget(userId)
+	widgetsMap[PrivateArea.LatestWorkoutWidget] = getLatestWorkoutWidget(userId)
 
 	return &PrivateArea.Response{
 		Widgets: widgetsMap,
@@ -70,13 +70,14 @@ func getTodayTargetWidget() Widgets.TodayTargetWidget {
 	return Widgets.TodayTargetWidget{}
 }
 
-func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
+func getActivityStatusWidget(userId int) *Widgets.ActivityStatusWidget {
 	heartRate, date, heartRateErr := getLastHeartRate(userId)
 	waterIntakeAim, waterIntakeAimErr := getWaterIntakeAim(userId)
 
 	var heartRateWidget *Widgets.HeartRateSubWidget
 	var waterIntakeSubWidget *Widgets.WaterIntakeSubWidget
 	var caloriesSubWidget *Widgets.CaloriesSubWidget
+	var sleepSubWidget *Widgets.SleepSubWidget
 
 	if heartRateErr == nil {
 		heartRateWidget = &Widgets.HeartRateSubWidget{
@@ -123,10 +124,16 @@ func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
 		}
 	}
 
-	return Widgets.ActivityStatusWidget{
+	sleepSubWidget = getSleepDuration(userId)
+
+	if heartRateWidget == nil && waterIntakeSubWidget == nil && sleepSubWidget == nil && caloriesSubWidget == nil {
+		return nil
+	}
+
+	return &Widgets.ActivityStatusWidget{
 		HeartRate:   heartRateWidget,
 		WaterIntake: waterIntakeSubWidget,
-		Sleep:       getSleepDuration(userId),
+		Sleep:       sleepSubWidget,
 		Calories:    caloriesSubWidget,
 	}
 }
@@ -134,7 +141,7 @@ func getActivityStatusWidget(userId int) Widgets.ActivityStatusWidget {
 func getLatestWorkoutWidget(userId int) *Widgets.LatestWorkoutWidget {
 	err, lastWorkouts := getLastWorkouts(userId)
 
-	if err != nil {
+	if err != nil || lastWorkouts == nil {
 		return nil
 	} else {
 		return &Widgets.LatestWorkoutWidget{
@@ -145,13 +152,13 @@ func getLatestWorkoutWidget(userId int) *Widgets.LatestWorkoutWidget {
 
 func getBMIStatusByValue(value float64) string {
 	if value < 18.5 {
-		return "UNDERWEIGHT"
+		return PrivateArea.Underweight
 	} else if value < 25 {
-		return "NORMAL_WEIGHT"
+		return PrivateArea.NormalWeight
 	} else if value < 30 {
-		return "OVERWEIGHT"
+		return PrivateArea.Overweight
 	} else {
-		return "OBESITY"
+		return PrivateArea.Obesity
 	}
 }
 
