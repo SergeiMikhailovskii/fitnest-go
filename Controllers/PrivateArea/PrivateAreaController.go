@@ -2,31 +2,38 @@ package PrivateArea
 
 import (
 	"TestProject/Controllers/PrivateArea/Dashboard"
+	"TestProject/Controllers/Registration"
 	"TestProject/Models/Base"
-	"TestProject/Models/PrivateArea"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func GetPage(c *gin.Context) {
+func GetDashboardPage(c *gin.Context) {
 	var response Base.Response
-	var data *PrivateArea.Response
-	var err error
+	data, err := Dashboard.GetDashboardPage(c)
 
-	page := c.Param("page")
-
-	switch page {
-	case "DASHBOARD":
-		data, err = Dashboard.GetDashboardPage(c)
-	}
 	if err != nil {
 		response.Errors = []Base.Error{
 			{
-				Field:   "registration",
+				Field:   "private_area_dashboard",
 				Message: err.Error(),
 			},
 		}
 	}
 	response.Data = &data
+
 	c.JSON(http.StatusOK, response)
+}
+
+func GenerateDashboardStub(c *gin.Context) {
+	userId, _ := Registration.GetUserId(c)
+
+	Dashboard.GenerateNotificationsStub(userId)
+	Dashboard.GenerateWorkoutsStub()
+	Dashboard.GenerateUserWorkoutsStub(userId)
+	Dashboard.GenerateWaterIntakeStub(userId)
+	Dashboard.GenerateWaterIntakeStub(userId)
+	Dashboard.GenerateCaloriesIntakeStub(userId)
+	Dashboard.GenerateWaterIntakeAimStub(userId)
+	Dashboard.GenerateSleepTimeStub(userId)
 }

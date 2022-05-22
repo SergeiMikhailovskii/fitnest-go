@@ -8,6 +8,7 @@ import (
 func SetupPrivateAreaRoute(r *gin.Engine) {
 	privateAreaGroup := r.Group("/private-area")
 	{
-		privateAreaGroup.GET("/:page", PrivateArea.GetPage)
+		privateAreaGroup.GET("/dashboard", PrivateArea.GetDashboardPage)
+		privateAreaGroup.GET("/dashboard/generate-stubs", PrivateArea.GenerateDashboardStub)
 	}
 }
