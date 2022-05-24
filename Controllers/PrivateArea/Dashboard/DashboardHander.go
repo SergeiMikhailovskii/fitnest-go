@@ -82,7 +82,7 @@ func getActivityStatusWidget(userId int) *Widgets.ActivityStatusWidget {
 	if heartRateErr == nil {
 		heartRateWidget = &Widgets.HeartRateSubWidget{
 			Rate: heartRate,
-			Date: date,
+			Date: date.Format("2006-01-02T15:04:05"),
 		}
 	} else {
 		heartRateWidget = nil
