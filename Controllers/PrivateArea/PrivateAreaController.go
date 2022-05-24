@@ -28,12 +28,13 @@ func GetDashboardPage(c *gin.Context) {
 func GenerateDashboardStub(c *gin.Context) {
 	userId, _ := Registration.GetUserId(c)
 
-	Dashboard.GenerateNotificationsStub(userId)
-	Dashboard.GenerateWorkoutsStub()
-	Dashboard.GenerateUserWorkoutsStub(userId)
-	Dashboard.GenerateWaterIntakeStub(userId)
-	Dashboard.GenerateWaterIntakeStub(userId)
-	Dashboard.GenerateCaloriesIntakeStub(userId)
-	Dashboard.GenerateWaterIntakeAimStub(userId)
-	Dashboard.GenerateSleepTimeStub(userId)
+	//Dashboard.GenerateNotificationsStub(userId)
+	//Dashboard.GenerateWorkoutsStub()
+	//Dashboard.GenerateUserWorkoutsStub(userId)
+	//Dashboard.GenerateWaterIntakeStub(userId)
+	//Dashboard.GenerateWaterIntakeStub(userId)
+	//Dashboard.GenerateCaloriesIntakeStub(userId)
+	//Dashboard.GenerateWaterIntakeAimStub(userId)
+	//Dashboard.GenerateSleepTimeStub(userId)
+	Dashboard.GenerateHeartRateStub(userId)
 }
