@@ -267,7 +267,7 @@ func mapDBIntakesToWidget(intakes []DB.WaterIntake) []Widgets.WaterIntake {
 	var widgetIntakes []Widgets.WaterIntake
 	for _, item := range intakes {
 		widgetIntakes = append(widgetIntakes, Widgets.WaterIntake{
-			TimeDiapason:   item.Time.String(),
+			TimeDiapason:   item.Time.Format("2006-01-02T15:04:05"),
 			AmountInMillis: item.Amount,
 		})
 	}
