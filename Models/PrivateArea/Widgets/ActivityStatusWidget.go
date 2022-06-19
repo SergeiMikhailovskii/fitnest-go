@@ -1,7 +1,5 @@
 package Widgets
 
-import "time"
-
 type ActivityStatusWidget struct {
 	HeartRate   *HeartRateSubWidget   `json:"heart_rate"`
 	WaterIntake *WaterIntakeSubWidget `json:"water_intake"`
@@ -10,8 +8,8 @@ type ActivityStatusWidget struct {
 }
 
 type HeartRateSubWidget struct {
-	Rate int       `json:"rate"`
-	Date time.Time `json:"date"`
+	Rate int    `json:"rate"`
+	Date string `json:"date"`
 }
 
 type WaterIntakeSubWidget struct {
