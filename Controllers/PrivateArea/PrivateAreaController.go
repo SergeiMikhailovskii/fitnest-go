@@ -2,6 +2,7 @@ package PrivateArea
 
 import (
 	"TestProject/Controllers/PrivateArea/Dashboard"
+	"TestProject/Controllers/PrivateArea/Notification"
 	"TestProject/Controllers/Registration"
 	"TestProject/Models/Base"
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,25 @@ func GetDashboardPage(c *gin.Context) {
 		}
 	}
 	response.Data = &data
+	response.Flow = "/private-area"
+
+	c.JSON(http.StatusOK, response)
+}
+
+func GetNotificationsPage(c *gin.Context) {
+	var response Base.Response
+	data, err := Notification.GetNotificationsPage(c)
+
+	if err != nil {
+		response.Errors = []Base.Error{
+			{
+				Field:   "private_area_notifications",
+				Message: err.Error(),
+			},
+		}
+	}
+	response.Data = &data
+	response.Flow = "/private-area"
 
 	c.JSON(http.StatusOK, response)
 }
