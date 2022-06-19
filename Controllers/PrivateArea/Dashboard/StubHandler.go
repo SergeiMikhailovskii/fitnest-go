@@ -100,8 +100,6 @@ func GenerateHeartRateStub(userId int) {
 		UserId: userId,
 		Rate:   78,
 		Date:   time.Now(),
-		//From:   time.Now().Add(-time.Hour * 8),
-		//To:     time.Now(),
 	}
 	err := Config.DB.Create(&heartRate).Error
 	if err != nil {
