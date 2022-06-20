@@ -30,14 +30,20 @@ func getNotificationsWidget(userId int) Widgets.NotificationsWidget {
 	} else {
 		var notifications []Widgets.Notification
 		for rows.Next() {
-			var notification Widgets.Notification
+			var notification DB.Notification
 			err = Config.DB.ScanRows(rows, &notification)
 
 			if err != nil {
 				return Widgets.NotificationsWidget{Notifications: nil}
 			}
 
-			notifications = append(notifications, notification)
+			notifications = append(notifications, Widgets.Notification{
+				Title:    notification.Text,
+				Date:     notification.Date.Format("2006-01-02T15:04:05"),
+				Type:     notification.Type,
+				IsActive: notification.IsActive,
+				IsPinned: notification.IsPinned,
+			})
 		}
 		return Widgets.NotificationsWidget{Notifications: notifications}
 	}
