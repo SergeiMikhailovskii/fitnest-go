@@ -45,6 +45,23 @@ func GetNotificationsPage(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+func DeactivateNotifications(c *gin.Context) {
+	var response Base.Response
+	err := Notification.DeactivateNotifications(c)
+
+	if err != nil {
+		response.Errors = []Base.Error{
+			{
+				Field:   "private_area_notifications_deactivate",
+				Message: err.Error(),
+			},
+		}
+	}
+	response.Flow = "/private-area"
+
+	c.JSON(http.StatusOK, response)
+}
+
 func GenerateDashboardStub(c *gin.Context) {
 	userId, _ := Registration.GetUserId(c)
 

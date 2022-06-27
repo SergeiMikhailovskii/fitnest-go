@@ -21,6 +21,18 @@ func GetNotificationsPage(c *gin.Context) (*PrivateArea.Response, error) {
 	}, nil
 }
 
+func DeactivateNotifications(c *gin.Context) error {
+	var request []int
+
+	err := c.BindJSON(&request)
+
+	for _, item := range request {
+		Config.DB.Model(&DB.Notification{}).Where("id = ?", item).Update("is_active", false)
+	}
+
+	return err
+}
+
 func getNotificationsWidget(userId int) Widgets.NotificationsWidget {
 	rows, err := Config.DB.Model(&DB.Notification{}).
 		Where("is_active = ? AND user_id = ?", true, userId).Rows()
