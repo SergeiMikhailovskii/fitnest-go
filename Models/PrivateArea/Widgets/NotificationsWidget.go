@@ -5,6 +5,7 @@ type NotificationsWidget struct {
 }
 
 type Notification struct {
+	ID       int    `json:"id"`
 	Title    string `json:"title"`
 	Date     string `json:"date"`
 	Type     string `json:"type"`

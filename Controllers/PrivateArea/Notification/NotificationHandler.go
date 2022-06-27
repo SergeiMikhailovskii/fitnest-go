@@ -38,6 +38,7 @@ func getNotificationsWidget(userId int) Widgets.NotificationsWidget {
 			}
 
 			notifications = append(notifications, Widgets.Notification{
+				ID:       notification.ID,
 				Title:    notification.Text,
 				Date:     notification.Date.Format("2006-01-02T15:04:05"),
 				Type:     notification.Type,
