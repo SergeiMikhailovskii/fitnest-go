@@ -35,7 +35,7 @@ func DeactivateNotifications(c *gin.Context) error {
 
 func getNotificationsWidget(userId int) Widgets.NotificationsWidget {
 	rows, err := Config.DB.Model(&DB.Notification{}).
-		Where("is_active = ? AND user_id = ?", true, userId).Rows()
+		Where("user_id = ?", userId).Rows()
 
 	if err != nil {
 		return Widgets.NotificationsWidget{Notifications: nil}
