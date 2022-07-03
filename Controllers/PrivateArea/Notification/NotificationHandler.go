@@ -5,6 +5,7 @@ import (
 	"TestProject/Controllers/Registration"
 	"TestProject/Models/PrivateArea"
 	"TestProject/Models/PrivateArea/DB"
+	"TestProject/Models/PrivateArea/Request"
 	"TestProject/Models/PrivateArea/Widgets"
 	"github.com/gin-gonic/gin"
 )
@@ -29,6 +30,24 @@ func DeactivateNotifications(c *gin.Context) error {
 	for _, item := range request {
 		Config.DB.Model(&DB.Notification{}).Where("id = ?", item).Update("is_active", false)
 	}
+
+	return err
+}
+
+func PinNotification(c *gin.Context) error {
+	var request Request.PinNotificationRequest
+
+	err := c.BindJSON(&request)
+
+	if err != nil {
+		return err
+	}
+
+	err = Config.DB.
+		Model(&DB.Notification{}).
+		Where("id = ?", request.Id).
+		Update("is_pinned", &request.Pin).
+		Error
 
 	return err
 }

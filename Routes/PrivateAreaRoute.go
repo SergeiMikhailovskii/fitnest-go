@@ -13,5 +13,6 @@ func SetupPrivateAreaRoute(r *gin.Engine) {
 		privateAreaGroup.GET("/dashboard/generate-stubs", PrivateArea.GenerateDashboardStub)
 
 		privateAreaGroup.POST("/notifications/deactivate", PrivateArea.DeactivateNotifications)
+		privateAreaGroup.POST("/notifications/pin", PrivateArea.PinNotification)
 	}
 }
