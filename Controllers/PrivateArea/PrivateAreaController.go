@@ -79,6 +79,23 @@ func PinNotification(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+func DeleteNotification(c *gin.Context) {
+	var response Base.Response
+	err := Notification.DeleteNotification(c)
+
+	if err != nil {
+		response.Errors = []Base.Error{
+			{
+				Field:   "private_area_notifications_delete",
+				Message: err.Error(),
+			},
+		}
+	}
+	response.Flow = "/private-area"
+
+	c.JSON(http.StatusOK, response)
+}
+
 func GenerateDashboardStub(c *gin.Context) {
 	userId, _ := Registration.GetUserId(c)
 

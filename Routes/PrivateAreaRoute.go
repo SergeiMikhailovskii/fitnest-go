@@ -14,5 +14,6 @@ func SetupPrivateAreaRoute(r *gin.Engine) {
 
 		privateAreaGroup.POST("/notifications/deactivate", PrivateArea.DeactivateNotifications)
 		privateAreaGroup.POST("/notifications/pin", PrivateArea.PinNotification)
+		privateAreaGroup.POST("/notifications/delete", PrivateArea.DeleteNotification)
 	}
 }

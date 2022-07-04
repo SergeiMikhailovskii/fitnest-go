@@ -52,6 +52,20 @@ func PinNotification(c *gin.Context) error {
 	return err
 }
 
+func DeleteNotification(c *gin.Context) error {
+	var request Request.DeleteNotificationRequest
+
+	err := c.BindJSON(&request)
+
+	if err != nil {
+		return err
+	}
+
+	err = Config.DB.Delete(&DB.Notification{}, request.Id).Error
+
+	return err
+}
+
 func getNotificationsWidget(userId int) Widgets.NotificationsWidget {
 	rows, err := Config.DB.Model(&DB.Notification{}).
 		Where("user_id = ?", userId).Rows()
