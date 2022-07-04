@@ -5,6 +5,7 @@ const BmiWidget = "BMI_WIDGET"
 const TodayTargetWidget = "TODAY_TARGET_WIDGET"
 const ActivityStatusWidget = "ACTIVITY_STATUS_WIDGET"
 const LatestWorkoutWidget = "LATEST_WORKOUT_WIDGET"
+const NotificationsWidget = "NOTIFICATIONS_WIDGET"
 
 const Underweight = "Underweight"
 const NormalWeight = "NORMAL_WEIGHT"
