@@ -1,7 +1,7 @@
 package Routes
 
 import (
-	"TestProject/Controllers/Flow"
+	"TestProject/Controllers/Registration/Flow"
 	"github.com/gin-gonic/gin"
 )
 

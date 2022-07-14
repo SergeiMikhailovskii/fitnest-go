@@ -1,8 +1,8 @@
 package Registration
 
 import (
-	"TestProject/Controllers/Anthropometry"
-	"TestProject/Controllers/Goal"
+	"TestProject/Controllers/Registration/Anthropometry"
+	"TestProject/Controllers/Registration/Goal"
 	"TestProject/Models"
 	"TestProject/Models/Base"
 	"TestProject/Models/Registration"
@@ -19,28 +19,28 @@ func IsRegistrationFinished(c *gin.Context) bool {
 		areForthStepFieldsFilled(primaryRegistrationRecord)
 }
 
-func getRegistrationStep(c *gin.Context) (*Registration.Response, error) {
+func getRegistrationStep(c *gin.Context) (*Registration.BaseRegistrationResponse, error) {
 	primaryRegistrationRecord := GetPrimaryRegistrationRecord(c)
 	if !areFirstStepFieldsFilled(primaryRegistrationRecord) {
-		return &Registration.Response{
+		return &Registration.BaseRegistrationResponse{
 			Step:             "STEP_CREATE_ACCOUNT",
 			Fields:           Registration.CreateStepModel{},
 			ValidationSchema: Registration.CreateStepValidationSchema,
 		}, nil
 	} else if !areSecondStepFieldsFilled(primaryRegistrationRecord) {
-		return &Registration.Response{
+		return &Registration.BaseRegistrationResponse{
 			Step:             "STEP_COMPLETE_ACCOUNT",
 			Fields:           Registration.CompleteStepModel{},
 			ValidationSchema: Registration.CompleteStepValidationSchema,
 		}, nil
 	} else if !areThirdStepFieldsFilled(primaryRegistrationRecord) {
-		return &Registration.Response{
+		return &Registration.BaseRegistrationResponse{
 			Step:             "STEP_GOAL",
 			Fields:           Registration.GoalStepModel{},
 			ValidationSchema: Registration.GoalStepValidationSchema,
 		}, nil
 	} else if !areForthStepFieldsFilled(primaryRegistrationRecord) {
-		return &Registration.Response{
+		return &Registration.BaseRegistrationResponse{
 			Step:   "STEP_WELCOME_BACK",
 			Fields: getForthStepFields(c),
 		}, nil
