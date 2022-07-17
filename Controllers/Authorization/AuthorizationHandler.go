@@ -40,7 +40,7 @@ func loginUser(fields Authorization.GetLoginFields) (*Base.Error, *int) {
 				Message: "error.invalid",
 			}, nil
 		} else {
-			return nil, &record.ID
+			return nil, &record.UserID
 		}
 	}
 }
