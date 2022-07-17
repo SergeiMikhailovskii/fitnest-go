@@ -18,6 +18,7 @@ func getLoginValidationSchema() Authorization.LoginValidationSchemaType {
 func loginUser(fields Authorization.GetLoginFields) (*Base.Error, *int) {
 	err := Config.DB.Model(&RegistrationModel.PrimaryInfo{}).
 		Where("email", fields.Login).
+		First(&RegistrationModel.PrimaryInfo{}).
 		Error
 
 	if err != nil {
