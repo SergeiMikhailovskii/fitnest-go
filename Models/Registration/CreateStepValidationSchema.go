@@ -24,7 +24,6 @@ var CreateStepValidationSchema = CreateStepValidationSchemaType{
 	},
 	Password: []Base.Validator{
 		Base.RequiredValidator(),
-		Base.RegExpValidator("^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*_)[a-zA-Z0-9_]+$"),
 		Base.MinLengthValidator(5),
 	},
 }
