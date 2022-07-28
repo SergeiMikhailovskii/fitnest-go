@@ -9,6 +9,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Init config
+        run: |
+          echo -e email: ${{ secrets.CONFIG_EMAIL }} >> email_config.yaml
+          echo -e password: ${{ secrets.CONFIG_PASSWORD }} >> email_config.yaml
+          echo -e smtpHost: ${{ secrets.CONFIG_SMTP_HOST }} >> email_config.yaml
+          echo -e smtpPort: ${{ secrets.CONFIG_SMTP_PORT }} >> email_config.yaml
+
       - uses: AkhileshNS/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
