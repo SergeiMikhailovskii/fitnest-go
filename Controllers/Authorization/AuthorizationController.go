@@ -48,14 +48,9 @@ func ForgetPassword(c *gin.Context) {
 	var request Authorization.ForgetPasswordFields
 	_ = c.BindJSON(&request)
 
-	var to []string
+	err, password := getPassword(*request.Login)
 
-	if request.Login != nil {
-		to = append(to, *request.Login)
+	if err == nil {
+		sendForgetPasswordEmail(*request.Login, password)
 	}
-
-	config := readEmailConfig()
-	c.JSON(http.StatusOK, Base.Response{Data: config})
-
-	sendEmail(to)
 }

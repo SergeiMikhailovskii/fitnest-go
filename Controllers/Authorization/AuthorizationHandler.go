@@ -6,7 +6,10 @@ import (
 	"TestProject/Models/Authorization"
 	"TestProject/Models/Base"
 	RegistrationModel "TestProject/Models/Registration"
+	"bytes"
+	"fmt"
 	"gopkg.in/yaml.v2"
+	"html/template"
 	"io/ioutil"
 	"net/smtp"
 )
@@ -49,22 +52,41 @@ func loginUser(fields Authorization.GetLoginFields) (*Base.Error, *int) {
 	}
 }
 
-func sendEmail(to []string) {
+func getPassword(login string) (error, string) {
+	var record RegistrationModel.PrimaryInfo
+	err := Config.DB.Model(&RegistrationModel.PrimaryInfo{}).
+		Where("email", login).
+		First(&record).
+		Error
+
+	return err, record.Password
+}
+
+func sendForgetPasswordEmail(to string, password string) {
 	config := readEmailConfig()
 
 	from := config.Email
-	password := config.Password
-	message := []byte("Email test")
+	senderPassword := config.Password
 
 	smtpHost := config.SmtpHost
 	smtpPort := config.SmtpPort
 
-	auth := smtp.PlainAuth("", from, password, smtpHost)
+	auth := smtp.PlainAuth("", from, senderPassword, smtpHost)
+
+	t, _ := template.ParseFiles("Templates/ForgetPassword.html")
+	var body bytes.Buffer
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	body.Write([]byte(fmt.Sprintf("Subject: Forget Password \n%s\n\n", mimeHeaders)))
+
+	err := t.Execute(&body, Authorization.ForgetPasswordTemplateFields{Password: password})
+	if err != nil {
+		panic(err)
+	}
 
 	go func() {
-		err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
-		if err != nil {
-			panic(err)
+		errSendMail := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{to}, body.Bytes())
+		if errSendMail != nil {
+			panic(errSendMail)
 		}
 	}()
 }
