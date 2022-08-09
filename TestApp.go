@@ -8,8 +8,11 @@ import (
 	"TestProject/Models/Registration"
 	"TestProject/Routes"
 	"TestProject/Util"
+	"errors"
+	"gopkg.in/yaml.v2"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"io/ioutil"
 	"os"
 )
 
@@ -17,6 +20,7 @@ var PORT = "8080"
 
 func main() {
 	initializeDB()
+	initEmailConfig()
 	r := Routes.SetupRouter()
 	port := os.Getenv("PORT")
 	if Util.IsEmpty(port) {
@@ -47,4 +51,24 @@ func initializeDB() {
 		&DB.SleepTime{},
 		&DB.CaloriesIntake{},
 	)
+}
+
+func initEmailConfig() {
+	if _, err := os.Stat("email_config.yaml"); errors.Is(err, os.ErrNotExist) {
+		data, errMarshal := yaml.Marshal(Models.EmailConfig{
+			Email:    os.Getenv("CONFIG_EMAIL"),
+			Password: os.Getenv("CONFIG_PASSWORD"),
+			SmtpHost: os.Getenv("CONFIG_SMTP_HOST"),
+			SmtpPort: os.Getenv("CONFIG_SMTP_PORT"),
+		})
+		if errMarshal != nil {
+			panic(errMarshal)
+		}
+
+		errWrite := ioutil.WriteFile("email_config.yaml", data, os.ModePerm)
+
+		if errWrite != nil {
+			panic(errWrite)
+		}
+	}
 }
