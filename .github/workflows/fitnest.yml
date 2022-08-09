@@ -4,12 +4,6 @@ on:
     branches:
       - '**'
 
-env:
-  CONFIG_EMAIL: ${{ secrets.CONFIG_EMAIL }}
-  CONFIG_PASSWORD: ${{ secrets.CONFIG_PASSWORD }}
-  CONFIG_SMTP_HOST: ${{ secrets.CONFIG_SMTP_HOST }}
-  CONFIG_SMTP_PORT: ${{ secrets.CONFIG_SMTP_PORT }}
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
