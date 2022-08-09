@@ -14,7 +14,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
-          remote_branch: "main"
+          branch: "main"
 
       - name: Init config
         run: |
@@ -24,4 +24,7 @@ jobs:
           echo -e smtpPort: ${{ secrets.CONFIG_SMTP_PORT }} >> email_config.yaml
 
       - name: Debug config log
-        run: cat email_config.yaml
+        run: |
+          cat email_config.yaml
+          pwd
+          ls
