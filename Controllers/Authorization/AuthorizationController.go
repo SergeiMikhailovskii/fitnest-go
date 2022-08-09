@@ -53,4 +53,5 @@ func ForgetPassword(c *gin.Context) {
 	if err == nil {
 		sendForgetPasswordEmail(*request.Login, password)
 	}
+	c.JSON(http.StatusOK, Base.Response{})
 }
