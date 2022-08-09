@@ -54,5 +54,8 @@ func ForgetPassword(c *gin.Context) {
 		to = append(to, *request.Login)
 	}
 
+	config := readEmailConfig()
+	c.JSON(http.StatusOK, Base.Response{Data: config})
+
 	sendEmail(to)
 }
