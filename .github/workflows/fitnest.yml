@@ -3,6 +3,13 @@ on:
   push:
     branches:
       - '**'
+
+env:
+  CONFIG_EMAIL: ${{ secrets.CONFIG_EMAIL }}
+  CONFIG_PASSWORD: ${{ secrets.CONFIG_PASSWORD }}
+  CONFIG_SMTP_HOST: ${{ secrets.CONFIG_SMTP_HOST }}
+  CONFIG_SMTP_PORT: ${{ secrets.CONFIG_SMTP_PORT }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,13 +22,6 @@ jobs:
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           remote_branch: "main"
-
-      - name: Init config
-        run: |
-          echo -e email: ${{ secrets.CONFIG_EMAIL }} >> email_config.yaml
-          echo -e password: ${{ secrets.CONFIG_PASSWORD }} >> email_config.yaml
-          echo -e smtpHost: ${{ secrets.CONFIG_SMTP_HOST }} >> email_config.yaml
-          echo -e smtpPort: ${{ secrets.CONFIG_SMTP_PORT }} >> email_config.yaml
 
       - name: Debug config log
         run: |
