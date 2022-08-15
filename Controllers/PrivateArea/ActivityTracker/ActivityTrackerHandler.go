@@ -30,19 +30,29 @@ func getActivityProgressWidget(userId int) *Widgets.ActivityProgressWidget {
 }
 
 func getTodayTargetWidget(userId int) *Widgets.TodayTargetWidget {
-	var result DB.WaterIntakeSumQuery
+	var result DB.ActivityTrackerSumQuery
 
 	now := time.Now()
 	dayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	dayEnd := dayStart.Add(time.Hour * 24)
+
 	_ = Config.DB.Model(&DB.WaterIntake{}).
-		Select("sum(amount) as total").
+		Select("sum(amount) as total_water_intake").
 		Where("time BETWEEN ? AND ? AND user_id = ?", dayStart, dayEnd, userId).
 		Find(&result)
 
+	waterIntake := result.TotalWaterIntake
+
+	_ = Config.DB.Model(&DB.Steps{}).
+		Select("sum(amount) as total_steps").
+		Where("time BETWEEN ? AND ? AND user_id = ?", dayStart, dayEnd, userId).
+		Find(&result)
+
+	steps := result.TotalSteps
+
 	return &Widgets.TodayTargetWidget{
-		WaterIntake: result.Total,
-		Steps:       0,
+		WaterIntake: waterIntake,
+		Steps:       steps,
 	}
 }
 
