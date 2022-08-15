@@ -1,6 +1,7 @@
 package PrivateArea
 
 import (
+	"TestProject/Controllers/PrivateArea/ActivityTracker"
 	"TestProject/Controllers/PrivateArea/Dashboard"
 	"TestProject/Controllers/PrivateArea/Notification"
 	"TestProject/Controllers/Registration"
@@ -35,6 +36,24 @@ func GetNotificationsPage(c *gin.Context) {
 		response.Errors = []Base.Error{
 			{
 				Field:   "private_area_notifications",
+				Message: err.Error(),
+			},
+		}
+	}
+	response.Data = &data
+	response.Flow = "/private-area"
+
+	c.JSON(http.StatusOK, response)
+}
+
+func GetActivityTrackerPage(c *gin.Context) {
+	var response Base.Response
+	data, err := ActivityTracker.GetActivityTrackerPage(c)
+
+	if err != nil {
+		response.Errors = []Base.Error{
+			{
+				Field:   "private_area_activity_tracker",
 				Message: err.Error(),
 			},
 		}

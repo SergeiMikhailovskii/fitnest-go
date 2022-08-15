@@ -9,6 +9,10 @@ type WaterIntake struct {
 	Amount int       `json:"amount"`
 }
 
+type WaterIntakeSumQuery struct {
+	Total int
+}
+
 func (b *WaterIntake) TableName() string {
 	return "water_intake"
 }

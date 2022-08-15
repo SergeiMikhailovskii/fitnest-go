@@ -10,6 +10,8 @@ func SetupPrivateAreaRoute(r *gin.Engine) {
 	{
 		privateAreaGroup.GET("/dashboard", PrivateArea.GetDashboardPage)
 		privateAreaGroup.GET("/notifications", PrivateArea.GetNotificationsPage)
+		privateAreaGroup.GET("/activity-tracker", PrivateArea.GetActivityTrackerPage)
+
 		privateAreaGroup.GET("/dashboard/generate-stubs", PrivateArea.GenerateDashboardStub)
 
 		privateAreaGroup.POST("/notifications/deactivate", PrivateArea.DeactivateNotifications)
