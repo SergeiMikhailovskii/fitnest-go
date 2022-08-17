@@ -9,6 +9,11 @@ type Steps struct {
 	Amount int       `json:"amount"`
 }
 
+type ActivityProgressQuery struct {
+	Date  time.Time
+	Total int
+}
+
 func (b *Steps) TableName() string {
 	return "steps"
 }

@@ -25,8 +25,60 @@ func GetActivityTrackerPage(c *gin.Context) (*PrivateArea.Response, error) {
 }
 
 func getActivityProgressWidget(userId int) *Widgets.ActivityProgressWidget {
+	now := time.Now()
+	periodEnd := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, now.Location())
+	periodStart := periodEnd.Add(-7 * time.Hour * 24)
 
-	return &Widgets.ActivityProgressWidget{}
+	rows, err := Config.DB.Model(&DB.Steps{}).
+		Select("date_trunc('day', time) AS date, SUM(amount) AS total").
+		Where("time BETWEEN ? AND ? AND user_id = ?", periodStart, periodEnd, userId).
+		Group("date").
+		Rows()
+
+	if err != nil {
+		panic(err)
+		return nil
+	}
+
+	var dbProgresses []Widgets.ActivityProgressItem
+	var activityProgresses []Widgets.ActivityProgressItem
+
+	for rows.Next() {
+		var activityProgress DB.ActivityProgressQuery
+		err = Config.DB.ScanRows(rows, &activityProgress)
+
+		activityProgressWidget := Widgets.ActivityProgressItem{
+			Date:  activityProgress.Date.Format("2006-01-02"),
+			Total: activityProgress.Total,
+		}
+
+		if err != nil {
+			return nil
+		}
+
+		dbProgresses = append(dbProgresses, activityProgressWidget)
+	}
+
+	for i := 0; i < 7; i++ {
+		isDateFromDB := false
+		currentDate := time.Date(periodStart.Year(), periodStart.Month(), periodStart.Day()+i, 0, 0, 0, 0, now.Location()).
+			Format("2006-01-02")
+
+		for _, item := range dbProgresses {
+			if item.Date == currentDate {
+				activityProgresses = append(activityProgresses, Widgets.ActivityProgressItem{Date: item.Date, Total: item.Total})
+				isDateFromDB = true
+			}
+		}
+
+		if !isDateFromDB {
+			activityProgresses = append(activityProgresses, Widgets.ActivityProgressItem{Date: currentDate, Total: 0})
+		}
+	}
+
+	return &Widgets.ActivityProgressWidget{
+		Progresses: activityProgresses,
+	}
 }
 
 func getTodayTargetWidget(userId int) *Widgets.TodayTargetWidget {
