@@ -109,5 +109,39 @@ func getTodayTargetWidget(userId int) *Widgets.TodayTargetWidget {
 }
 
 func getLatestActivityWidget(userId int) *Widgets.LatestActivityWidget {
-	return &Widgets.LatestActivityWidget{}
+	rows, err := Config.DB.
+		Raw("(?) UNION (?) ORDER BY time DESC LIMIT 5",
+			Config.DB.Select("*, 'Water' as type").
+				Model(&DB.WaterIntake{}).
+				Where("user_id = ?", userId),
+			Config.DB.Select("*, 'CALORIES' as type").
+				Model(&DB.CaloriesIntake{}).
+				Where("user_id = ?", userId),
+		).
+		Rows()
+
+	if err != nil {
+		return nil
+	}
+
+	var activities []Widgets.Activity
+	for rows.Next() {
+		var result DB.LatestActivityQuery
+		err = Config.DB.ScanRows(rows, &result)
+
+		if err != nil {
+			return nil
+		}
+
+		activities = append(activities, Widgets.Activity{
+			Amount: result.Amount,
+			Type:   result.Type,
+			Time:   result.Time.Format("2006-01-02T15:04:05"),
+		})
+
+	}
+
+	return &Widgets.LatestActivityWidget{
+		Activities: activities,
+	}
 }
