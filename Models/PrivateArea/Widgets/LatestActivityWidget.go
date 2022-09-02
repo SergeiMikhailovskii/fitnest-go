@@ -5,7 +5,7 @@ type LatestActivityWidget struct {
 }
 
 type Activity struct {
-	Amount int
-	Type   string
-	Time   string
+	Amount int    `json:"amount"`
+	Type   string `json:"type"`
+	Time   string `json:"time"`
 }
