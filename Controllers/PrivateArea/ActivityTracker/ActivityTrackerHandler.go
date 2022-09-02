@@ -111,7 +111,7 @@ func getTodayTargetWidget(userId int) *Widgets.TodayTargetWidget {
 func getLatestActivityWidget(userId int) *Widgets.LatestActivityWidget {
 	rows, err := Config.DB.
 		Raw("(?) UNION (?) ORDER BY time DESC LIMIT 5",
-			Config.DB.Select("*, 'Water' as type").
+			Config.DB.Select("*, 'WATER' as type").
 				Model(&DB.WaterIntake{}).
 				Where("user_id = ?", userId),
 			Config.DB.Select("*, 'CALORIES' as type").
