@@ -5,6 +5,6 @@ type ActivityProgressWidget struct {
 }
 
 type ActivityProgressItem struct {
-	Date  string
-	Total int
+	Date  string `json:"date"`
+	Total int    `json:"total"`
 }
