@@ -141,7 +141,11 @@ func getLatestActivityWidget(userId int) *Widgets.LatestActivityWidget {
 
 	}
 
-	return &Widgets.LatestActivityWidget{
-		Activities: activities,
+	if activities == nil {
+		return nil
+	} else {
+		return &Widgets.LatestActivityWidget{
+			Activities: activities,
+		}
 	}
 }
