@@ -134,6 +134,7 @@ func getLatestActivityWidget(userId int) *Widgets.LatestActivityWidget {
 		}
 
 		activities = append(activities, Widgets.Activity{
+			ID:     result.ID,
 			Amount: result.Amount,
 			Type:   result.Type,
 			Time:   result.Time.Format("2006-01-02T15:04:05"),

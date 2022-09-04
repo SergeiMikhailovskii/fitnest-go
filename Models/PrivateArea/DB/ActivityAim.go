@@ -10,6 +10,7 @@ type ActivityAim struct {
 }
 
 type LatestActivityQuery struct {
+	ID     int
 	Time   time.Time
 	Amount int
 	Type   string
