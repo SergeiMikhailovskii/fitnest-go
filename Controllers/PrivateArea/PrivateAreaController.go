@@ -115,6 +115,23 @@ func DeleteNotification(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+func DeleteActivity(c *gin.Context) {
+	var response Base.Response
+	err := ActivityTracker.DeleteActivity(c)
+
+	if err != nil {
+		response.Errors = []Base.Error{
+			{
+				Field:   "private_area_activity_delete",
+				Message: err.Error(),
+			},
+		}
+	}
+	response.Flow = "/private-area"
+
+	c.JSON(http.StatusOK, response)
+}
+
 func GenerateDashboardStub(c *gin.Context) {
 	userId, _ := Registration.GetUserId(c)
 

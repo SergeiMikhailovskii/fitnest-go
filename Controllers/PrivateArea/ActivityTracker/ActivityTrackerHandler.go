@@ -5,6 +5,7 @@ import (
 	"TestProject/Controllers/Registration"
 	"TestProject/Models/PrivateArea"
 	"TestProject/Models/PrivateArea/DB"
+	"TestProject/Models/PrivateArea/Request"
 	"TestProject/Models/PrivateArea/Widgets"
 	"github.com/gin-gonic/gin"
 	"time"
@@ -22,6 +23,17 @@ func GetActivityTrackerPage(c *gin.Context) (*PrivateArea.Response, error) {
 	return &PrivateArea.Response{
 		Widgets: widgetsMap,
 	}, nil
+}
+
+func DeleteActivity(c *gin.Context) error {
+	var request Request.DeleteActivityRequest
+	_ = c.BindJSON(&request)
+
+	if request.Type == "WATER" {
+		return Config.DB.Delete(&DB.WaterIntake{}, request.Id).Error
+	} else {
+		return Config.DB.Delete(&DB.CaloriesIntake{}, request.Id).Error
+	}
 }
 
 func getActivityProgressWidget(userId int) *Widgets.ActivityProgressWidget {
