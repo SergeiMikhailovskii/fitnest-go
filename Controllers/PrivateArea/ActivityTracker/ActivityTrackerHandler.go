@@ -36,6 +36,28 @@ func DeleteActivity(c *gin.Context) error {
 	}
 }
 
+func AddActivity(c *gin.Context) error {
+	var request Request.AddActivityRequest
+	_ = c.BindJSON(&request)
+	userId, _ := Registration.GetUserId(c)
+
+	if request.Type == "WATER" {
+		waterIntake := DB.WaterIntake{
+			UserId: userId,
+			Time:   time.Now(),
+			Amount: request.Amount,
+		}
+		return Config.DB.Create(&waterIntake).Error
+	} else {
+		caloriesIntake := DB.CaloriesIntake{
+			UserId: userId,
+			Time:   time.Now(),
+			Amount: request.Amount,
+		}
+		return Config.DB.Create(&caloriesIntake).Error
+	}
+}
+
 func getActivityProgressWidget(userId int) *Widgets.ActivityProgressWidget {
 	now := time.Now()
 	periodEnd := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, now.Location())

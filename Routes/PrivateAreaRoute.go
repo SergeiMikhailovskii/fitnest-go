@@ -18,5 +18,6 @@ func SetupPrivateAreaRoute(r *gin.Engine) {
 		privateAreaGroup.POST("/notifications/delete", PrivateArea.DeleteNotification)
 
 		privateAreaGroup.POST("/activity-tracker/delete-activity", PrivateArea.DeleteActivity)
+		privateAreaGroup.POST("/activity-tracker/add-activity", PrivateArea.AddActivity)
 	}
 }
