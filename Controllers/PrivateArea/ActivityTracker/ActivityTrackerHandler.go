@@ -45,14 +45,14 @@ func AddActivity(c *gin.Context) error {
 		waterIntake := DB.WaterIntake{
 			UserId: userId,
 			Time:   time.Now(),
-			Amount: request.Amount,
+			Amount: *request.Amount,
 		}
 		return Config.DB.Create(&waterIntake).Error
 	} else {
 		caloriesIntake := DB.Steps{
 			UserId: userId,
 			Time:   time.Now(),
-			Amount: request.Amount,
+			Amount: *request.Amount,
 		}
 		return Config.DB.Create(&caloriesIntake).Error
 	}
