@@ -32,7 +32,7 @@ func DeleteActivity(c *gin.Context) error {
 	if request.Type == "WATER" {
 		return Config.DB.Delete(&DB.WaterIntake{}, request.Id).Error
 	} else {
-		return Config.DB.Delete(&DB.CaloriesIntake{}, request.Id).Error
+		return Config.DB.Delete(&DB.Steps{}, request.Id).Error
 	}
 }
 
