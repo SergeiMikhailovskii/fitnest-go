@@ -9,8 +9,9 @@ type WaterIntake struct {
 	Amount int       `json:"amount"`
 }
 
-type WaterIntakeSumQuery struct {
-	Total int
+type ActivityTrackerSumQuery struct {
+	TotalWaterIntake int
+	TotalSteps       int
 }
 
 func (b *WaterIntake) TableName() string {

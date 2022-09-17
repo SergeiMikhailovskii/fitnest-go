@@ -71,6 +71,20 @@ func GenerateCaloriesIntakeStub(userId int) {
 	}
 }
 
+func GenerateStepsStub(userId int) {
+	for i := 1; i <= 10; i++ {
+		caloriesIntake := DB.Steps{
+			UserId: userId,
+			Time:   time.Now().Add(-time.Hour * time.Duration(i) * 24),
+			Amount: i * 1000,
+		}
+		err := Config.DB.Create(&caloriesIntake).Error
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func GenerateWaterIntakeAimStub(userId int) {
 	waterIntakeAim := DB.ActivityAim{
 		UserId:            userId,

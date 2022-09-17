@@ -12,8 +12,11 @@ import (
 	"gopkg.in/yaml.v2"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"io/ioutil"
+	"log"
 	"os"
+	"time"
 )
 
 var PORT = "8080"
@@ -31,7 +34,14 @@ func main() {
 
 func initializeDB() {
 	url := Config.DbURL(Config.BuildDBConfig())
-	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(url), &gorm.Config{
+		Logger: logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
+			SlowThreshold:             time.Second,
+			LogLevel:                  logger.Info,
+			IgnoreRecordNotFoundError: true,
+			Colorful:                  true,
+		}),
+	})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -47,6 +57,7 @@ func initializeDB() {
 		&DB.Workout{},
 		&DB.UserWorkout{},
 		&DB.WaterIntake{},
+		&DB.Steps{},
 		&DB.ActivityAim{},
 		&DB.SleepTime{},
 		&DB.CaloriesIntake{},
