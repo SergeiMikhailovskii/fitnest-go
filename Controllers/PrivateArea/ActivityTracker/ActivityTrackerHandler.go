@@ -49,7 +49,7 @@ func AddActivity(c *gin.Context) error {
 		}
 		return Config.DB.Create(&waterIntake).Error
 	} else {
-		caloriesIntake := DB.CaloriesIntake{
+		caloriesIntake := DB.Steps{
 			UserId: userId,
 			Time:   time.Now(),
 			Amount: request.Amount,
@@ -148,8 +148,8 @@ func getLatestActivityWidget(userId int) *Widgets.LatestActivityWidget {
 			Config.DB.Select("*, 'WATER' as type").
 				Model(&DB.WaterIntake{}).
 				Where("user_id = ?", userId),
-			Config.DB.Select("*, 'CALORIES' as type").
-				Model(&DB.CaloriesIntake{}).
+			Config.DB.Select("*, 'STEPS' as type").
+				Model(&DB.Steps{}).
 				Where("user_id = ?", userId),
 		).
 		Rows()
