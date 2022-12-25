@@ -4,6 +4,7 @@ import (
 	"TestProject/Controllers/PrivateArea/ActivityTracker"
 	"TestProject/Controllers/PrivateArea/Dashboard"
 	"TestProject/Controllers/PrivateArea/Notification"
+	"TestProject/Controllers/PrivateArea/Profile"
 	"TestProject/Controllers/Registration"
 	"TestProject/Models/Base"
 	"github.com/gin-gonic/gin"
@@ -54,6 +55,24 @@ func GetActivityTrackerPage(c *gin.Context) {
 		response.Errors = []Base.Error{
 			{
 				Field:   "private_area_activity_tracker",
+				Message: err.Error(),
+			},
+		}
+	}
+	response.Data = &data
+	response.Flow = "/private-area"
+
+	c.JSON(http.StatusOK, response)
+}
+
+func GetProfilePage(c *gin.Context) {
+	var response Base.Response
+	data, err := Profile.GetProfilePage(c)
+
+	if err != nil {
+		response.Errors = []Base.Error{
+			{
+				Field:   "private_area_profile",
 				Message: err.Error(),
 			},
 		}
